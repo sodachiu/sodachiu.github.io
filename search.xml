@@ -1,21 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<search>
-  <entry>
-    <title><![CDATA[这是一个测试]]></title>
-    <url>%2F2018%2F09%2F17%2F%E8%BF%99%E6%98%AF%E4%B8%80%E4%B8%AA%E6%B5%8B%E8%AF%95%2F</url>
-    <content type="text"><![CDATA[这是一个测试这是一个测试这是一个测试]]></content>
-      <tags>
-        <tag>test</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title></title>
-    <url>%2F2018%2F09%2F17%2F2018-09-17%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%2F</url>
-    <content type="text"><![CDATA[2018-09-17 学习笔记1. Android 中使 TextView 中的文字水平靠右垂直居中问题描述： 如题，需要将文字水平靠右垂直居中 解决办法： Android 中的 gravity 属性阔以这样写： android:gravity=&quot;center_vertical|right&quot; ，需要其它样式依次类推。]]></content>
-  </entry>
-  <entry>
-    <title><![CDATA[Hello World]]></title>
-    <url>%2F2018%2F09%2F17%2Fhello-world%2F</url>
-    <content type="text"><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick StartCreate a new post1$ hexo new "My New Post" More info: Writing Run server1$ hexo server More info: Server Generate static files1$ hexo generate More info: Generating Deploy to remote sites1$ hexo deploy More info: Deployment]]></content>
-  </entry>
+<search> 
+  
+    
+    <entry>
+      <title>Android: 使 TextView 中的文字水平靠右且垂直居中</title>
+      <link href="/2018/09/17/Android-%E4%BD%BF-TextView-%E4%B8%AD%E7%9A%84%E6%96%87%E5%AD%97%E6%B0%B4%E5%B9%B3%E9%9D%A0%E5%8F%B3%E4%B8%94%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD/"/>
+      <url>/2018/09/17/Android-%E4%BD%BF-TextView-%E4%B8%AD%E7%9A%84%E6%96%87%E5%AD%97%E6%B0%B4%E5%B9%B3%E9%9D%A0%E5%8F%B3%E4%B8%94%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD/</url>
+      
+        <content type="html"><![CDATA[<p><strong>问题描述：</strong> 如题，需要将文字水平靠右垂直居中</p><p><strong>解决办法：</strong> Android 中的 gravity 属性阔以这样写： <code>android:gravity=&quot;center_vertical|right&quot;</code> ，如果需要其它样式依此类推。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习笔记 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+  
+  
 </search>
