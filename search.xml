@@ -1,53 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<search> 
-  
-    
-    <entry>
-      <title>Git: HttpRequestException encountered</title>
-      <link href="/2018/09/18/Git-HttpRequestException-encountered/"/>
-      <url>/2018/09/18/Git-HttpRequestException-encountered/</url>
-      
-        <content type="html"><![CDATA[<p><strong>问题描述：</strong> 之前 git 用得好好的，一个周末回来，<code>git push</code> 的时候就报<code>HttpRequestException encountered.</code>这种错，网上查了 下解决办法 ↓ </p><p><strong>解决办法：</strong> <a href="https://github.com/Microsoft/Git-Credential-Manager-for-Windows/releases/" target="_blank" rel="noopener">点击下载最新的 GCM </a> 下载后安装好就行了…这个问题好像只有 windows 会出现，原理的话，可以看看参考文章。</p><p><strong>参考：</strong> [<a href="https://www.cnblogs.com/xuey/p/8474071.html" target="_blank" rel="noopener">git push fatal: HttpRequestException encountered</a>]</p>]]></content>
-      
-      
+<search>
+  <entry>
+    <title><![CDATA[Android: 控件篇（一）]]></title>
+    <url>%2F2018%2F09%2F18%2FAndroid-%E6%8E%A7%E4%BB%B6%E7%AF%87%2F</url>
+    <content type="text"><![CDATA[背景介绍： 本文仅记录学习 Android 过程中遇到的各类控件，大概以后会分类总结一下吧，现在只是无脑填充。 1. 显示时间的容器：TextClock问题描述： 开发过程中需要一个能够显示时间的 TextView，时间分为 24 小时和 12 小时两种格式。类似于：[下午11:08]、[23:08]。 解决办法： Google 一下，你就知道。哈哈哈哈开个玩笑，不过确实是 Google 出来的。使用 TextClock 控件，注意：听说这控件 ==API &gt;= 17== 才可用，代码如下： 123456&lt;TextClock style="@style/LayoutContentStyle" android:layout_weight="5" android:gravity="center" android:format12Hour="aa hh:mm" android:format24Hour="hh:mm"/&gt; 其中 style 是用的自己写的一个样式，我们只用关注 format12Hour &amp; format24Hour两个属性即可。 format12Hour，表示12小时制的显示格式，”aa” 表示显示上午/下午，其它大家读懂。 format24Hour，表示24小时制的显示格式。 如果需要显示日期，用 &quot;yyyy/MM/dd hh:mm:ss&quot; 即可。]]></content>
       <categories>
-          
-          <category> 学习 </category>
-          
+        <category>学习</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> Git </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    <entry>
-      <title>Android: 使 TextView 中的文字水平靠右且垂直居中</title>
-      <link href="/2018/09/17/Android-%E4%BD%BF-TextView-%E4%B8%AD%E7%9A%84%E6%96%87%E5%AD%97%E6%B0%B4%E5%B9%B3%E9%9D%A0%E5%8F%B3%E4%B8%94%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD/"/>
-      <url>/2018/09/17/Android-%E4%BD%BF-TextView-%E4%B8%AD%E7%9A%84%E6%96%87%E5%AD%97%E6%B0%B4%E5%B9%B3%E9%9D%A0%E5%8F%B3%E4%B8%94%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD/</url>
-      
-        <content type="html"><![CDATA[<p><strong>问题描述：</strong> 如题，需要将文字水平靠右垂直居中</p><p><strong>解决办法：</strong> Android 中的 gravity 属性阔以这样写： <code>android:gravity=&quot;center_vertical|right&quot;</code> ，如果需要其它样式依此类推。</p>]]></content>
-      
-      
+      <tags>
+        <tag>Android</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Git: HttpRequestException encountered]]></title>
+    <url>%2F2018%2F09%2F18%2FGit-HttpRequestException-encountered%2F</url>
+    <content type="text"><![CDATA[问题描述： 之前 git 用得好好的，一个周末回来，git push 的时候就报HttpRequestException encountered.这种错，网上查了 下解决办法 ↓ 解决办法： 点击下载最新的 GCM 下载后安装好就行了…这个问题好像只有 windows 会出现，原理的话，可以看看参考文章。 参考： [git push fatal: HttpRequestException encountered]]]></content>
       <categories>
-          
-          <category> 学习 </category>
-          
+        <category>学习</category>
       </categories>
-      
-      
-        <tags>
-            
-            <tag> Android </tag>
-            
-        </tags>
-      
-    </entry>
-    
-  
-  
+      <tags>
+        <tag>Git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Android: TextView 样式问题]]></title>
+    <url>%2F2018%2F09%2F17%2FAndroid-%E4%BD%BF-TextView-%E4%B8%AD%E7%9A%84%E6%96%87%E5%AD%97%E6%B0%B4%E5%B9%B3%E9%9D%A0%E5%8F%B3%E4%B8%94%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD%2F</url>
+    <content type="text"><![CDATA[背景介绍本文单纯记录学习 Android 路上遇到的样式问题。 1. 为 TextView 文字设置两个对齐方向解决办法： Android 中的 gravity 属性阔以这样写： android:gravity=&quot;center_vertical|right&quot; ，表示垂直居中，水平靠右。如果需要其它对其方向，可以参考。 2. EditView 去掉边框（下划线）解决办法： 属性这样写：android:background=&quot;@null&quot; 。]]></content>
+      <categories>
+        <category>学习</category>
+      </categories>
+      <tags>
+        <tag>Android</tag>
+      </tags>
+  </entry>
 </search>
