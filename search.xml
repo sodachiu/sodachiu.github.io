@@ -1,36 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<search>
-  <entry>
-    <title><![CDATA[Android: 控件篇（一）]]></title>
-    <url>%2F2018%2F09%2F18%2FAndroid-%E6%8E%A7%E4%BB%B6%E7%AF%87%2F</url>
-    <content type="text"><![CDATA[背景介绍： 本文仅记录学习 Android 过程中遇到的各类控件，大概以后会分类总结一下吧，现在只是无脑填充。 1. 显示时间的容器：TextClock参考文档： Android 实时显示时间 问题描述： 开发过程中需要一个能够显示时间的 TextView，时间分为 24 小时和 12 小时两种格式。类似于：[下午11:08]、[23:08]。 解决办法： Google 一下，你就知道。哈哈哈哈开个玩笑，不过确实是 Google 出来的。使用 TextClock 控件，注意：听说这控件 ==API &gt;= 17== 才可用，代码如下： 123456&lt;TextClock style="@style/LayoutContentStyle" android:layout_weight="5" android:gravity="center" android:format12Hour="aa hh:mm" android:format24Hour="hh:mm"/&gt; 其中 style 是用的自己写的一个样式，我们只用关注 format12Hour &amp; format24Hour两个属性即可。 format12Hour，表示12小时制的显示格式，”aa” 表示显示上午/下午，其它大家读懂。 format24Hour，表示24小时制的显示格式。 如果需要显示日期，用 &quot;yyyy/MM/dd hh:mm:ss&quot; 即可。]]></content>
+<search> 
+  
+    
+    <entry>
+      <title>Android: 关于Fragment初始化闪退问题</title>
+      <link href="/2018/09/19/Android-%E5%85%B3%E4%BA%8EFragment%E5%88%9D%E5%A7%8B%E5%8C%96%E9%97%AA%E9%80%80%E9%97%AE%E9%A2%98/"/>
+      <url>/2018/09/19/Android-%E5%85%B3%E4%BA%8EFragment%E5%88%9D%E5%A7%8B%E5%8C%96%E9%97%AA%E9%80%80%E9%97%AE%E9%A2%98/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档：</strong> <a href="https://blog.csdn.net/JLM_8/article/details/71272638" target="_blank" rel="noopener">Android中如何在Fragment中添加点击事件切换新的Fragment</a> </p><p><strong>问题描述：</strong> 在 Fragment 中，有一些控件（TextView）是需要动态赋值的，然后天真的我直接在 <code>onCreateView</code>中根据用<code>setText()</code>方法 来做。结果就是——闪退。最后发现取到得 TextView 是 null 。</p><p><strong>解决办法：</strong> 其实有一个方法，是<code>onActivityCreated()</code> ，在里面动态为控件赋值就 OK 的。该方法是等布局加载完成之后，才能通过 ID 取到相应的 Fragment 中的控件。相当于：我在水果店里买东西，伸手想从一个果篮里拿水果出来，但是发现篮子里什么都没有，等店员往里面放了商品之后，我才能从篮子里挑选自己想到的东西。</p><p>具体代码如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public class FragmentMyInfo extends Fragment&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public View onCreateView(LayoutInflater inflater,</span><br><span class="line">                             ViewGroup container,</span><br><span class="line">                             Bundle savedInstanceState)&#123;</span><br><span class="line">        View view = inflater.inflate(R.layout.fragment_my_info, container,false);</span><br><span class="line">        return view;</span><br><span class="line">    &#125;</span><br><span class="line">    public void onActivityCreated(@Nullable Bundle savedInstanceState) &#123;</span><br><span class="line">        super.onActivityCreated(savedInstanceState);</span><br><span class="line">        //这里写要动态赋值的东西</span><br><span class="line">        TextView devType = (TextView) getActivity().findViewById(R.id.dev_type);</span><br><span class="line">        Log.d(TAG, &quot;onCreateView: &quot; + devType);</span><br><span class="line">        devType.setText(R.string.dev_type);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p><strong>多说一句：</strong> title 没有取好，但是暂时还不知道怎么用精准且简洁的语言来描述这个问题；第一次尝试用比喻来讲一个问题，也不知道比喻使用恰不恰当。之后想到了更好的会改。</p><p>菜鸟发出一声凄厉的尖叫。</p>]]></content>
+      
+      
       <categories>
-        <category>学习</category>
+          
+          <category> 学习 </category>
+          
       </categories>
-      <tags>
-        <tag>Android</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[Git: HttpRequestException encountered]]></title>
-    <url>%2F2018%2F09%2F18%2FGit-HttpRequestException-encountered%2F</url>
-    <content type="text"><![CDATA[问题描述： 之前 git 用得好好的，一个周末回来，git push 的时候就报HttpRequestException encountered.这种错，网上查了 下解决办法 ↓ 解决办法： 点击下载最新的 GCM 下载后安装好就行了…这个问题好像只有 windows 会出现，原理的话，可以看看参考文章。 参考： [git push fatal: HttpRequestException encountered]]]></content>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: Fragment详解</title>
+      <link href="/2018/09/18/Android-Fragment%E8%AF%A6%E8%A7%A3/"/>
+      <url>/2018/09/18/Android-Fragment%E8%AF%A6%E8%A7%A3/</url>
+      
+        <content type="html"><![CDATA[<p><strong>背景介绍：</strong></p><p>​    最近有个练习，考虑用 Fragment 来做，所以研究了一下。</p><p><strong>参考文档：</strong> </p><ul><li><a href="https://xiazdong.github.io/2017/06/15/android-fragment/" target="_blank" rel="noopener">Android基础：Fragment，看这篇就够了</a> </li><li><a href="https://blog.csdn.net/xieluoxixi/article/details/53978544" target="_blank" rel="noopener">利用Bundle完成Activity向Fragment传值</a></li><li><a href="https://blog.csdn.net/JLM_8/article/details/71272638" target="_blank" rel="noopener">Android中如何在Fragment中添加点击事件切换新的Fragment</a></li><li><a href="https://blog.csdn.net/jasoncol_521/article/details/8878553" target="_blank" rel="noopener">Android 文本动态处理方法，TextView动态赋值</a></li><li></li></ul><h4 id="可复写的方法："><a href="#可复写的方法：" class="headerlink" title="可复写的方法："></a>可复写的方法：</h4><ul><li>onCreateView()，返回 Fragment 的 UI 布局</li></ul><p>Tips:</p><ul><li>如果在创建 Fragment 时，需要传入参数，建议使用 <code>setArguments()</code></li></ul>]]></content>
+      
+      
       <categories>
-        <category>学习</category>
+          
+          <category> 学习 </category>
+          
       </categories>
-      <tags>
-        <tag>Git</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[Android: TextView 样式问题]]></title>
-    <url>%2F2018%2F09%2F17%2FAndroid-%E4%BD%BF-TextView-%E4%B8%AD%E7%9A%84%E6%96%87%E5%AD%97%E6%B0%B4%E5%B9%B3%E9%9D%A0%E5%8F%B3%E4%B8%94%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD%2F</url>
-    <content type="text"><![CDATA[背景介绍本文单纯记录学习 Android 路上遇到的样式问题。 1. 为 TextView 文字设置两个对齐方向解决办法： Android 中的 gravity 属性阔以这样写： android:gravity=&quot;center_vertical|right&quot; ，表示垂直居中，水平靠右。如果需要其它对其方向，可以参考。 2. EditView 去掉边框（下划线）解决办法： 属性这样写：android:background=&quot;@null&quot; 。 3. 居中问题需要控件中的内容居中： 使用 android:gravity 属性 需要控件在父布局中居中： 使用 android:layout_gravity 属性 4. 边距问题关于边距，有两个属性可用：margin 和 padding margin: 指控件与控件的距离。 padding: 指控件的内边距，肚子里面装的文本之类的东西与边框的距离。 ==如果仍然迷惑，可以打开 Chrome，Windows 下按 F12 进入调试模式，看看标准的盒子模型== 当然直接用搜索引擎搜标准盒子模型也可以 ↑↑↑]]></content>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: 控件篇（一）</title>
+      <link href="/2018/09/18/Android-%E6%8E%A7%E4%BB%B6%E7%AF%87%EF%BC%88%E4%B8%80%EF%BC%89/"/>
+      <url>/2018/09/18/Android-%E6%8E%A7%E4%BB%B6%E7%AF%87%EF%BC%88%E4%B8%80%EF%BC%89/</url>
+      
+        <content type="html"><![CDATA[<p><strong>背景介绍：</strong> 本文仅记录学习 Android 过程中遇到的各类控件，大概以后会分类总结一下吧，现在只是无脑填充。</p><h4 id="1-显示时间的容器：TextClock"><a href="#1-显示时间的容器：TextClock" class="headerlink" title="1. 显示时间的容器：TextClock"></a>1. 显示时间的容器：TextClock</h4><p><strong>参考文档：</strong> <a href="https://www.jianshu.com/p/a8a37d3d9a03" target="_blank" rel="noopener">Android 实时显示时间</a>  </p><p><strong>问题描述：</strong> 开发过程中需要一个能够显示时间的 TextView，时间分为 24 小时和 12 小时两种格式。类似于：[下午11:08]、[23:08]。</p><p><strong>解决办法：</strong> Google 一下，你就知道。哈哈哈哈开个玩笑，不过确实是 Google 出来的。使用 TextClock 控件，注意：听说这控件 ==API &gt;= 17== 才可用，代码如下：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;TextClock</span><br><span class="line">            style=<span class="string">"@style/LayoutContentStyle"</span></span><br><span class="line">            android:layout_weight=<span class="string">"5"</span></span><br><span class="line">            android:gravity=<span class="string">"center"</span></span><br><span class="line">            android:format12Hour=<span class="string">"aa hh:mm"</span></span><br><span class="line">            android:format24Hour=<span class="string">"hh:mm"</span>/&gt;</span><br></pre></td></tr></table></figure><p>其中 style 是用的自己写的一个样式，我们只用关注 <code>format12Hour</code> &amp; <code>format24Hour</code>两个属性即可。</p><p><code>format12Hour</code>，表示12小时制的显示格式，”aa” 表示显示上午/下午，其它大家读懂。</p><p><code>format24Hour</code>，表示24小时制的显示格式。</p><p>如果需要显示日期，用 <code>&quot;yyyy/MM/dd hh:mm:ss&quot;</code> 即可。</p>]]></content>
+      
+      
       <categories>
-        <category>学习</category>
+          
+          <category> 学习 </category>
+          
       </categories>
-      <tags>
-        <tag>Android</tag>
-      </tags>
-  </entry>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Git: HttpRequestException encountered</title>
+      <link href="/2018/09/18/Git-HttpRequestException-encountered/"/>
+      <url>/2018/09/18/Git-HttpRequestException-encountered/</url>
+      
+        <content type="html"><![CDATA[<p><strong>问题描述：</strong> 之前 git 用得好好的，一个周末回来，<code>git push</code> 的时候就报<code>HttpRequestException encountered.</code>这种错，网上查了 下解决办法 ↓ </p><p><strong>解决办法：</strong> <a href="https://github.com/Microsoft/Git-Credential-Manager-for-Windows/releases/" target="_blank" rel="noopener">点击下载最新的 GCM </a> 下载后安装好就行了…这个问题好像只有 windows 会出现，原理的话，可以看看参考文章。</p><p><strong>参考：</strong> [<a href="https://www.cnblogs.com/xuey/p/8474071.html" target="_blank" rel="noopener">git push fatal: HttpRequestException encountered</a>]</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Git </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: TextView 样式问题</title>
+      <link href="/2018/09/17/Android-TextView-%E6%A0%B7%E5%BC%8F%E9%97%AE%E9%A2%98/"/>
+      <url>/2018/09/17/Android-TextView-%E6%A0%B7%E5%BC%8F%E9%97%AE%E9%A2%98/</url>
+      
+        <content type="html"><![CDATA[<h3 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h3><p>本文单纯记录学习 Android 路上遇到的样式问题。</p><h4 id="1-为-TextView-文字设置两个对齐方向"><a href="#1-为-TextView-文字设置两个对齐方向" class="headerlink" title="1. 为 TextView 文字设置两个对齐方向"></a>1. 为 TextView 文字设置两个对齐方向</h4><p><strong>解决办法：</strong> Android 中的 gravity 属性阔以这样写： <code>android:gravity=&quot;center_vertical|right&quot;</code> ，表示垂直居中，水平靠右。如果需要其它对其方向，可以参考。</p><h4 id="2-EditView-去掉边框（下划线）"><a href="#2-EditView-去掉边框（下划线）" class="headerlink" title="2. EditView 去掉边框（下划线）"></a>2. EditView 去掉边框（下划线）</h4><p><strong>解决办法：</strong> 属性这样写：<code>android:background=&quot;@null&quot;</code> 。</p><h4 id="3-居中问题"><a href="#3-居中问题" class="headerlink" title="3. 居中问题"></a>3. 居中问题</h4><p><strong>需要控件中的内容居中：</strong> 使用 <code>android:gravity</code> 属性</p><p><strong>需要控件在父布局中居中：</strong> 使用 <code>android:layout_gravity</code> 属性</p><h4 id="4-边距问题"><a href="#4-边距问题" class="headerlink" title="4. 边距问题"></a>4. 边距问题</h4><p>关于边距，有两个属性可用：<code>margin</code> 和 <code>padding</code></p><p><strong>margin:</strong> 指控件与控件的距离。</p><p><strong>padding:</strong> 指控件的内边距，肚子里面装的文本之类的东西与边框的距离。</p><p>==如果仍然迷惑，可以打开 Chrome，Windows 下按 F12 进入调试模式，看看标准的盒子模型==</p><p>当然直接用搜索引擎搜标准盒子模型也可以 ↑↑↑</p><p>​    </p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+  
+  
 </search>
