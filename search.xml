@@ -3,7 +3,7 @@
   <entry>
     <title><![CDATA[test picture]]></title>
     <url>%2F2018%2F10%2F09%2Ftest-picture%2F</url>
-    <content type="text"></content>
+    <content type="text"><![CDATA[]]></content>
   </entry>
   <entry>
     <title><![CDATA[Android: AS 如何导入 jar 包]]></title>
