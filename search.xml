@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[test picture]]></title>
+    <url>%2F2018%2F10%2F09%2Ftest-picture%2F</url>
+    <content type="text"><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title><![CDATA[Android: AS 如何导入 jar 包]]></title>
     <url>%2F2018%2F09%2F29%2FAndroid-AS-%E5%A6%82%E4%BD%95%E5%AF%BC%E5%85%A5-jar-%E5%8C%85%2F</url>
     <content type="text"><![CDATA[参考文档： Android Studio导入和删除jar包 这是一个神奇的网站 1. 具体步骤 复制 jar 包到 【项目-&gt;app-&gt;libs】路径下，如果没有 libs 文件夹，自己新建一个就行。 右键 jar 包，选择 【add as library】，等待项目编译完成。 到 build.gradle 文件中查看 dependecies 下是否有加入导入的 jar 包，比如我的是： 没有就自己手动添加试试？ 到此导入 jar 包的步骤就完成了。 2. 异常处理不过通常会报以下错误：这个错误的主要原因 &amp; 分类解决办法戳链接看 配置方法数超过64K的应用， 1234Cannot fit requested classes in a single dex file. Try supplying a main-dex list.# methods: 82121 &gt; 65536Message&#123;kind=ERROR, text=Cannot fit requested classes in a single dex file. Try supplying a main-dex list.# methods: 82121 &gt; 65536, sources=[Unknown source file], tool name=Optional.of(D8)&#125; 解决办法： 在app build.gradle 文件中，dependencies下添加 1implementation 'com.android.support:multidex:1.0.3' 然后在这个文件中找到 defaultConfig, 在里面添加 1multiDexEnabled true]]></content>
