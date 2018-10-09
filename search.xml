@@ -1,6 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Android: AS 如何导入 jar 包]]></title>
+    <url>%2F2018%2F09%2F29%2FAndroid-AS-%E5%A6%82%E4%BD%95%E5%AF%BC%E5%85%A5-jar-%E5%8C%85%2F</url>
+    <content type="text"><![CDATA[参考文档： Android Studio导入和删除jar包 这是一个神奇的网站 1. 具体步骤 复制 jar 包到 【项目-&gt;app-&gt;libs】路径下，如果没有 libs 文件夹，自己新建一个就行。 右键 jar 包，选择 【add as library】，等待项目编译完成。 到 build.gradle 文件中查看 dependecies 下是否有加入导入的 jar 包，比如我的是： 没有就自己手动添加试试？ 到此导入 jar 包的步骤就完成了。 2. 异常处理不过通常会报以下错误：这个错误的主要原因 &amp; 分类解决办法戳链接看 配置方法数超过64K的应用， 1234Cannot fit requested classes in a single dex file. Try supplying a main-dex list.# methods: 82121 &gt; 65536Message&#123;kind=ERROR, text=Cannot fit requested classes in a single dex file. Try supplying a main-dex list.# methods: 82121 &gt; 65536, sources=[Unknown source file], tool name=Optional.of(D8)&#125; 解决办法： 在app build.gradle 文件中，dependencies下添加 1implementation 'com.android.support:multidex:1.0.3' 然后在这个文件中找到 defaultConfig, 在里面添加 1multiDexEnabled true]]></content>
+      <categories>
+        <category>学习</category>
+      </categories>
+      <tags>
+        <tag>Android</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Android: 关于使用 Dialog样式的Activity闪退问题]]></title>
+    <url>%2F2018%2F09%2F27%2FAndroid-%E5%85%B3%E4%BA%8E%E4%BD%BF%E7%94%A8-Dialog%E6%A0%B7%E5%BC%8F%E7%9A%84Activity%E9%97%AA%E9%80%80%E9%97%AE%E9%A2%98%2F</url>
+    <content type="text"><![CDATA[问题描述： 在尝试使用 Dialog 风格 Activity 的时候，参考了一篇文章【参考链接】，但是运行时却发生闪退情况。 解决办法： 自己琢磨了一下，发现在使用 Dialog 风格 Activity 时，activity 应该 extends Activity, 而我代码写的是extends AppCompatActivity。原理尚不清楚，坑先挖在这了，等着填。 原来 activity 部分代码： 1234567public class DevDialogActivity extends AppCompatActivity &#123; @Override protected void onCreate(Bundle savedInstanceState) &#123; super.onCreate(savedInstanceState); setContentView(R.layout.activity_dev_dialog); &#125;&#125; 修改后 activity 部分代码： 1234567public class DevDialogActivity extends Activity &#123; @Override protected void onCreate(Bundle savedInstanceState) &#123; super.onCreate(savedInstanceState); setContentView(R.layout.activity_dev_dialog); &#125;&#125;]]></content>
+      <categories>
+        <category>学习</category>
+      </categories>
+      <tags>
+        <tag>Android</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Android: 获取系统时间并格式化显示]]></title>
+    <url>%2F2018%2F09%2F27%2FAndroid-%E8%8E%B7%E5%8F%96%E7%B3%BB%E7%BB%9F%E6%97%B6%E9%97%B4%E5%B9%B6%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%98%BE%E7%A4%BA%2F</url>
+    <content type="text"></content>
+      <categories>
+        <category>学习</category>
+      </categories>
+      <tags>
+        <tag>Android</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Android: 如何让 ViewGroup 监听按键事件]]></title>
+    <url>%2F2018%2F09%2F25%2FAndroid-%E5%A6%82%E4%BD%95%E8%AE%A9-ViewGroup-%E7%9B%91%E5%90%AC%E6%8C%89%E9%94%AE%E4%BA%8B%E4%BB%B6%2F</url>
+    <content type="text"></content>
+  </entry>
+  <entry>
+    <title><![CDATA[[待解决]Android: 关于 Fragment 调用 Fragment 时闪退的问题]]></title>
+    <url>%2F2018%2F09%2F21%2FAndroid-%E5%85%B3%E4%BA%8E-Fragment-%E8%B0%83%E7%94%A8-Fragment-%E6%97%B6%E9%97%AA%E9%80%80%E7%9A%84%E9%97%AE%E9%A2%98%2F</url>
+    <content type="text"><![CDATA[​ 问题描述： 在使用 Fragment 调用新的 Fragment 时，遇到程序闪退的情况。代码如下： 1dddd 解决方法： 貌似是]]></content>
+      <categories>
+        <category>学习</category>
+      </categories>
+      <tags>
+        <tag>Android</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[Android: 关于Fragment初始化闪退问题]]></title>
     <url>%2F2018%2F09%2F19%2FAndroid-%E5%85%B3%E4%BA%8EFragment%E5%88%9D%E5%A7%8B%E5%8C%96%E9%97%AA%E9%80%80%E9%97%AE%E9%A2%98%2F</url>
     <content type="text"><![CDATA[参考文档： Android中如何在Fragment中添加点击事件切换新的Fragment 问题描述： 在 Fragment 中，有一些控件（TextView）是需要动态赋值的，然后天真的我直接在 onCreateView中根据用setText()方法 来做。结果就是——闪退。最后发现取到的 TextView 是 null 。 解决办法： 其实有一个方法，是onActivityCreated() ，在里面为控件赋值就 OK 的。该方法是等布局加载完成之后，才能通过 ID 取到 Fragment 中的控件。相当于：我在水果店里买东西，伸手想从一个果篮里拿水果出来，但是发现篮子里什么都没有，等店员往里面放了商品之后，我才能在篮子里挑选自己想要的东西。 具体代码如下： 12345678910111213141516public class FragmentMyInfo extends Fragment&#123; @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)&#123; View view = inflater.inflate(R.layout.fragment_my_info, container,false); return view; &#125; public void onActivityCreated(@Nullable Bundle savedInstanceState) &#123; super.onActivityCreated(savedInstanceState); //这里写要动态赋值的代码 TextView devType = (TextView) getActivity().findViewById(R.id.dev_type); Log.d(TAG, &quot;onCreateView: &quot; + devType); devType.setText(R.string.dev_type); &#125;&#125; 多说一句： title 没有取好，但暂时还不知道怎么用精准且简洁的语言来描述这个问题；第一次尝试用比喻来讲一个问题，也不知道比喻使用恰不恰当。之后想到了更好的都会改。 菜鸟发出一声凄厉的尖叫]]></content>
@@ -47,7 +96,7 @@
   <entry>
     <title><![CDATA[Android: TextView 样式问题]]></title>
     <url>%2F2018%2F09%2F17%2FAndroid-TextView-%E6%A0%B7%E5%BC%8F%E9%97%AE%E9%A2%98%2F</url>
-    <content type="text"><![CDATA[背景介绍本文单纯记录学习 Android 路上遇到的样式问题。 1. 为 TextView 文字设置两个对齐方向解决办法： Android 中的 gravity 属性阔以这样写： android:gravity=&quot;center_vertical|right&quot; ，表示垂直居中，水平靠右。如果需要其它对其方向，可以参考。 2. EditView 去掉边框（下划线）解决办法： 属性这样写：android:background=&quot;@null&quot; 。 3. 居中问题需要控件中的内容居中： 使用 android:gravity 属性 需要控件在父布局中居中： 使用 android:layout_gravity 属性 4. 边距问题关于边距，有两个属性可用：margin 和 padding margin: 指控件与控件的距离。 padding: 指控件的内边距，肚子里面装的文本之类的东西与边框的距离。 ==如果仍然迷惑，可以打开 Chrome，Windows 下按 F12 进入调试模式，看看标准的盒子模型== 当然直接用搜索引擎搜标准盒子模型也可以 ↑↑↑ ​]]></content>
+    <content type="text"><![CDATA[背景介绍本文单纯记录学习 Android 路上遇到的样式问题。 1. 为 TextView 文字设置两个对齐方向解决办法： Android 中的 gravity 属性阔以这样写： android:gravity=&quot;center_vertical|right&quot; ，表示垂直居中，水平靠右。如果需要其它对其方向，可以参考。 2. EditView 去掉边框（下划线）解决办法： 属性这样写：android:background=&quot;@null&quot; 。 3. 居中问题需要控件中的内容居中： 使用 android:gravity 属性 需要控件在父布局中居中： 使用 android:layout_gravity 属性 4. 边距问题关于边距，有两个属性可用：margin 和 padding margin: 指控件与控件的距离。 padding: 指控件的内边距，肚子里面装的文本之类的东西与边框的距离。 ==如果仍然迷惑，可以打开 Chrome，Windows 下按 F12 进入调试模式，看看标准的盒子模型== 当然直接用搜索引擎搜标准盒子模型也可以 ↑↑↑ 5. 关于 visibility 属性的使用控件的 visibility 属性决定该控件是否可见，当值为 android:visibility=&quot;invisible&quot;时，控件不可见，==但控件仍然在页面上占据位置==。 代码中动态设置控件是否可见： 使用view.setVisibility(int)方法，该方法接收一个 int 值，有两个可选项：View.VISIBLE &amp; View.INVISIBLE. 也就是说，如果需要设置控件可见，可以这样写 12TextView tv = (TextView) findViewById(R.id.xxx);tv.setVisibility(View.VISIBLE); //不可见同理 ​]]></content>
       <categories>
         <category>学习</category>
       </categories>
