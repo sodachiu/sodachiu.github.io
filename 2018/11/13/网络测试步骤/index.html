@@ -1,0 +1,48 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="苏打邱的学习笔记/日常"><title>网络测试步骤 | 苏打邱</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/8.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">网络测试步骤</h1><a id="logo" href="/.">苏打邱</a><p class="description">苏打邱的博客</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">网络测试步骤</h1><div class="post-meta">Nov 13, 2018<span> | </span><span class="category"><a href="/categories/工作/">工作</a></span></div><div class="post-content"><ol>
+<li><p>进入页面查看是否根据当前连接的网络进行相应的显示（已连接位置对否，焦点是否正确  </p>
+</li>
+<li><p>进入静态IP</p>
+<ul>
+<li><p>点击取消，查看当前网络状态是否改变，如果改变，则有bug</p>
+</li>
+<li><p>输入错误的IP，看能否正确判断</p>
+</li>
+<li>输入错误的netmask</li>
+<li>输入错误的gateway</li>
+<li>输入错误的dns1</li>
+<li>输出错误的dns2</li>
+<li>输入gateway与ip不在同一个网段</li>
+<li>输入正确的格式，尝试连接静态IP，看能够连接上网络</li>
+<li>如果用户在已经连接静态IP的情况下，没有修改任何信息，再次点击“确定”，提示用户没有修改任何信息</li>
+</ul>
+</li>
+<li><p>进入pppoe</p>
+<ul>
+<li>不输入用户名及密码，查看提示</li>
+<li>输入用户名密码，查看提示</li>
+<li>退出该界面，查看上一层网络连接状态是否改变</li>
+<li>如果用户在pppoe已经连接上的情况，不改变用户名和密码再次点击“确定”按钮，提示已经连接</li>
+</ul>
+</li>
+<li><p>断开网线，查看提示</p>
+</li>
+<li><p>点击连接pppoe，dhcp，静态ip，查看是否提示网线没有插上</p>
+</li>
+<li><p>插上网线，查看提示是否为网线已插入，是否会更新网络状态</p>
+</li>
+<li><p>插上网线，但不联网，查看提示状态已经网络更新状态</p>
+</li>
+<li><p>在dhcp连接的情况下，点击连接dhcp，看提示</p>
+</li>
+<li><p>在dhcp没有链接的情况下，点击连接dhcp，看提示</p>
+</li>
+<li><p>在有网线，但没网的情况下，把所有以上逻辑测一遍，看有什么问题</p>
+</li>
+</ol>
+</div><div class="tags"><a href="/tags/测试/">测试</a></div><div class="post-nav"><a class="pre" href="/2018/11/14/重温一遍做项目的流程/">重温一遍做项目的流程</a><a class="next" href="/2018/11/12/Android-style复用共有属性/">Android: style复用共有属性</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/学习/">学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工作/">工作</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/日常/">日常</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/Android/" style="font-size: 15px;">Android</a> <a href="/tags/Andorid/" style="font-size: 15px;">Andorid</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/测试/" style="font-size: 15px;">测试</a> <a href="/tags/项目流程/" style="font-size: 15px;">项目流程</a> <a href="/tags/计算机网络/" style="font-size: 15px;">计算机网络</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/12/06/Android-关于存储设备状态改变的静态广播无法接收的问题/">Android: 关于存储设备状态改变的静态广播无法接收的问题</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/16/Android-fragment生命周期与执行hide、show后经历的生命周期/">Android: fragment生命周期与执行hide、show后经历的生命周期</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/16/Android-获取当前显示的fragment对象/">Android: 获取当前显示的fragment对象</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/16/Linux-chmod命令/">Linux: chmod命令</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/16/Android-sp-还是dp？/">Android: sp 还是dp？</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/16/Android-getSupportFragmentManager-gerFragmentManager/">Android: getSupportFragmentManager & gerFragmentManager</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/16/Android：神奇的属性篇/">Android：神奇的属性篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/16/Android-获取当前焦点位置/">Android: 获取当前焦点位置</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/14/重温一遍做项目的流程/">重温一遍做项目的流程</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/13/网络测试步骤/">网络测试步骤</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2018 <a href="/." rel="nofollow">苏打邱.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.3.5/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.3.5/jquery.fancybox.min.css"><script type="text/javascript" src="/js/search.js?v=0.0.0"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+   search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>

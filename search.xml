@@ -1,112 +1,1057 @@
 <?xml version="1.0" encoding="utf-8"?>
-<search>
-  <entry>
-    <title><![CDATA[test picture]]></title>
-    <url>%2F2018%2F10%2F09%2Ftest-picture%2F</url>
-    <content type="text"><![CDATA[]]></content>
-  </entry>
-  <entry>
-    <title><![CDATA[Android: AS 如何导入 jar 包]]></title>
-    <url>%2F2018%2F09%2F29%2FAndroid-AS-%E5%A6%82%E4%BD%95%E5%AF%BC%E5%85%A5-jar-%E5%8C%85%2F</url>
-    <content type="text"><![CDATA[参考文档： Android Studio导入和删除jar包 这是一个神奇的网站 1. 具体步骤 复制 jar 包到 【项目-&gt;app-&gt;libs】路径下，如果没有 libs 文件夹，自己新建一个就行。 右键 jar 包，选择 【add as library】，等待项目编译完成。 到 build.gradle 文件中查看 dependecies 下是否有加入导入的 jar 包，比如我的是： 没有就自己手动添加试试？ 到此导入 jar 包的步骤就完成了。 2. 异常处理不过通常会报以下错误：这个错误的主要原因 &amp; 分类解决办法戳链接看 配置方法数超过64K的应用， 1234Cannot fit requested classes in a single dex file. Try supplying a main-dex list.# methods: 82121 &gt; 65536Message&#123;kind=ERROR, text=Cannot fit requested classes in a single dex file. Try supplying a main-dex list.# methods: 82121 &gt; 65536, sources=[Unknown source file], tool name=Optional.of(D8)&#125; 解决办法： 在app build.gradle 文件中，dependencies下添加 1implementation 'com.android.support:multidex:1.0.3' 然后在这个文件中找到 defaultConfig, 在里面添加 1multiDexEnabled true]]></content>
+<search> 
+  
+    
+    <entry>
+      <title>Android: 关于存储设备状态改变的静态广播无法接收的问题</title>
+      <link href="/2018/12/06/Android-%E5%85%B3%E4%BA%8E%E5%AD%98%E5%82%A8%E8%AE%BE%E5%A4%87%E7%8A%B6%E6%80%81%E6%94%B9%E5%8F%98%E7%9A%84%E9%9D%99%E6%80%81%E5%B9%BF%E6%92%AD%E6%97%A0%E6%B3%95%E6%8E%A5%E6%94%B6%E7%9A%84%E9%97%AE%E9%A2%98/"/>
+      <url>/2018/12/06/Android-%E5%85%B3%E4%BA%8E%E5%AD%98%E5%82%A8%E8%AE%BE%E5%A4%87%E7%8A%B6%E6%80%81%E6%94%B9%E5%8F%98%E7%9A%84%E9%9D%99%E6%80%81%E5%B9%BF%E6%92%AD%E6%97%A0%E6%B3%95%E6%8E%A5%E6%94%B6%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+      
+        <content type="html"><![CDATA[<h4 id="一-问题描述："><a href="#一-问题描述：" class="headerlink" title="一. 问题描述："></a>一. 问题描述：</h4><p>最近在重构存储设备功能模块，想要将原本的动态广播转换为静态广播，这样不管在哪个地方，存储设备状态改变，我都能收到提示。于是我尝试了以下代码：</p><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;receiver</span><br><span class="line">     android:name=<span class="string">".MyFileReceiver"</span></span><br><span class="line">     android:enabled=<span class="string">"true"</span></span><br><span class="line">     android:exported=<span class="string">"true"</span>&gt;</span><br><span class="line">     &lt;intent-filter android:priority=<span class="string">"100"</span>&gt;</span><br><span class="line">         &lt;action android:name=<span class="string">"android.intent.action.MEDIA_MOUNTED"</span> /&gt;</span><br><span class="line">         &lt;action android:name=<span class="string">"android.intent.action.MEDIA_UNMOUNTED"</span> /&gt;</span><br><span class="line">     &lt;/intent-filter&gt;</span><br><span class="line">&lt;/receiver&gt;</span><br></pre></td></tr></table></figure><p>但是如论如何，都接收不到该广播。</p><p>起初以为是自己的<code>java</code> 文件有毛病，但是手动发送一个广播，又能成功接收到。</p><p>所以具体是什么原因呢？ 首先我按照 “静态广播无法接收” 的关键词 google 了一下，查到的全是静态广播如何写这样的文章，我….</p><h4 id="二-解决办法"><a href="#二-解决办法" class="headerlink" title="二. 解决办法"></a>二. 解决办法</h4><p>过了几天，突发奇想，按照“INTENT.ACTION_MEDIA_MOUNTED” 这个关键词直接 google，找了一圈，发现 <a href="https://liliang1222.iteye.com/blog/1178112" target="_blank" rel="noopener">一篇文章</a> 里有解决办法，如下:</p><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;receiver</span><br><span class="line">    android:name=<span class="string">".MyFileReceiver"</span></span><br><span class="line">    android:enabled=<span class="string">"true"</span></span><br><span class="line">    android:exported=<span class="string">"true"</span>&gt;</span><br><span class="line">    &lt;intent-filter android:priority=<span class="string">"100"</span>&gt;</span><br><span class="line">        &lt;action android:name=<span class="string">"android.intent.action.MEDIA_MOUNTED"</span> /&gt;</span><br><span class="line">        &lt;action android:name=<span class="string">"android.intent.action.MEDIA_UNMOUNTED"</span> /&gt;</span><br><span class="line">        <span class="comment">// 需要添加下面这一行</span></span><br><span class="line">        &lt;data android:scheme=<span class="string">"file"</span>/&gt;</span><br><span class="line">    &lt;/intent-filter&gt;</span><br><span class="line">&lt;/receiver&gt;</span><br></pre></td></tr></table></figure><p>所以为什么要添加这一行呢，参考链接里也贴了 <a href="https://blog.csdn.net/silenceburn/article/details/6083375" target="_blank" rel="noopener">详解的链接</a> ，接下来，我就再复习一遍吧。</p><h4 id="三-关于-Andoroid-事件过滤策略"><a href="#三-关于-Andoroid-事件过滤策略" class="headerlink" title="三. 关于 Andoroid 事件过滤策略"></a>三. 关于 Andoroid 事件过滤策略</h4><ol><li><p><strong>Intent 的分类：显式和隐式</strong></p><p>一个 Intent 包含的信息</p><p><img src="http://pjcd0prqq.bkt.clouddn.com/intent_content.png" alt=""></p></li></ol><p>图片取自 <a href="https://www.jianshu.com/p/19147a69e970" target="_blank" rel="noopener">Intent详解</a> 该文章有对 <code>Intent</code> 进行较为详细的解释，需要的战友可以进去看看。<br>由图可以看到，显式 <code>Intent</code> 与隐式 <code>Intent</code> 最大的区别，是 <code>ComponentName</code> 是否为空。</p><p><strong>2. 事件过滤策略与 IntentFilter</strong><br><a href="https://blog.csdn.net/silenceburn/article/details/6083375" target="_blank" rel="noopener">原链接</a> 的比喻挺适合理解。我就用自己的话再复述一遍吧：将系统广播的分发比喻为信件的派发。当信件上有收件人的详细地址时，邮递员可以直接通过地址找到你，并将信件放到你的手上。那如果，信件上没有详细地址，只有收件人的特征—— 男，30岁，码农。这样的信件邮递员该如何处理呢？邮递员惊喜地发现，负责信件派发区域内的所有房门上都有住户的特征介绍，比如：女，20岁，学生； 女，35岁，家庭主妇… 如此一来，只要对应上 <strong>所有</strong> 特征，就把信件交付给相应地住户就 OK 了。</p><p>当然这是不恰当地比喻，因为信件只有一封，只能给到一个人。但是系统可以将事件分发给所有符合条件的程序。</p><p>这个比喻里，有详细地址的信件，就相当于 <code>Intent.getComponent != null</code> 系统可以通过<code>ComponentName</code> 直接找到接收此事件的组件。而没有指定<code>Intent.Component</code> 的事件，就只能借助其它特征来决定该给哪些程序发广播了，这些特征就是<code>Action</code> 、<code>Data</code> 、<code>Category</code>  当程序给出的所有接收特征与系统广播的这些特征一一对应，那么就能接收到相应的广播啦。</p><p>那么我们就来研究下，在 SD 卡发生插拔事件时，系统发出的广播都携带了哪些特征叭！</p><ul><li>动态注册广播：</li></ul><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">IntentFilter filter = <span class="keyword">new</span> IntentFilter();</span><br><span class="line">filter.addAction(Intent.ACTION_MEDIA_MOUNTED);</span><br><span class="line">filter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);</span><br><span class="line">filter.addDataScheme(<span class="string">"file"</span>); <span class="comment">// 必需，否则无法接收到事件</span></span><br><span class="line">mContext.registerReceiver(myStorageReceiver, filter);</span><br></pre></td></tr></table></figure><ul><li>打印信息</li></ul><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> BroadcastReceiver myStorageReceiver = <span class="keyword">new</span> BroadcastReceiver() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceive</span><span class="params">(Context context, Intent intent)</span> </span>&#123;</span><br><span class="line">            </span><br><span class="line">            ComponentName componentName = intent.getComponent();</span><br><span class="line">            Set&lt;String&gt; categories = intent.getCategories();</span><br><span class="line">            Uri data = intent.getData();</span><br><span class="line">            String action = intent.getAction();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (componentName != <span class="keyword">null</span>) &#123;</span><br><span class="line">                Log.i(TAG, <span class="string">"onReceive: componentName----"</span> + componentName.toString());</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                Log.i(TAG, <span class="string">"onReceive: componentName----null"</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (categories != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">for</span> (String item : categories) &#123;</span><br><span class="line">                    Log.i(TAG, <span class="string">"onReceive: category----"</span> + item);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                Log.i(TAG, <span class="string">"onReceive: categories----null"</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (data != <span class="keyword">null</span>) &#123;</span><br><span class="line">                Log.i(TAG, <span class="string">"onReceive: data----"</span> + data);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                Log.i(TAG, <span class="string">"onReceive: data----null"</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (action != <span class="keyword">null</span>) &#123;</span><br><span class="line">                Log.i(TAG, <span class="string">"onReceive: action----"</span> + action);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                Log.i(TAG, <span class="string">"onReceive: action----null"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure><ul><li>打印结果</li></ul><p><img src="http://pjcd0prqq.bkt.clouddn.com/inten_log1.png" alt=""></p><p>可以看到，<code>componentName</code> 为 空，为隐式事件。</p><p><img src="http://pjcd0prqq.bkt.clouddn.com/intent-filter-methods.png" alt=""></p><p>由图可以看到，<code>IntentFilter</code> 可以添加如上特征进行事件过滤，必须全部匹配才能收到事件广播。</p><p><strong>3. Data 匹配规则</strong> </p><p><code>Data</code> 由 <code>Uri</code> 来描述，而<code>Uri</code>由三部分组成：</p><p>==scheme://host:port/path== | 模式://端口:主机号/路径</p><p>从打印结果可以看到，SD 挂载事件，<code>data: scheme == &quot;file&quot;</code>  </p><p>现在我们需要了解一个规则，即对于<code>Uri</code>，只比较<code>filter</code> 中声明的部分，如果匹配到声明的部分，即认为匹配成功。</p><p>我们代码中只声明了<code>scheme</code> 部分，并且与<code>Uri</code> 成功匹配，所以匹配成功。</p><p><code>Uri</code> 的具体匹配规则如下：</p><ul><li>如果<code>data</code> 的<code>Uri</code>与<code>dataType</code> 均为空，那么<code>filter</code>中也需要全部为空才能匹配成功</li><li>如果<code>data</code>的<code>Uri</code>为空，<code>dataType</code>不为空，那么<code>filter</code>中的<code>Uri</code>必须为空，且<code>dataType</code>匹配成功，才能匹配成功</li><li>如果<code>data</code>的<code>Uri</code> 不为空，<code>dataType</code>为空，那么<code>filter</code>中的<code>Uri</code>必须匹配成功，且<code>dataType</code>为空，才能匹配成功</li><li>如果<code>data</code> 的<code>Uri</code>与<code>dataType</code> 均不为空，那么<code>filter</code>中必须定义两者并且都匹配成功，才能匹配成功</li></ul><p>一句话总结，即<code>IntentFilter</code>必须与<code>Intent</code>携带信息全部匹配成功，才能接收事件。</p><h4 id="四-最后"><a href="#四-最后" class="headerlink" title="四. 最后"></a>四. 最后</h4><p>还是看看 <a href="https://blog.csdn.net/silenceburn/article/details/6083375" target="_blank" rel="noopener">原链接</a> 吧，讲得真的很好了。小菜鸡的语言组织能力还是太差了，今后继续加油。</p><p>留下疑问：既然<code>data</code>的<code>Uri</code>认为部分匹配成功，即认为匹配成功。那么我<code>filter</code>中不添加<code>scheme</code>，只添加<code>path</code> 匹配成功也收不到广播的问题在哪？</p><!--我还学到了，这叫SD卡插拔事件--> ]]></content>
+      
+      
       <categories>
-        <category>学习</category>
+          
+          <category> 学习 </category>
+          
       </categories>
-      <tags>
-        <tag>Android</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[Android: 关于使用 Dialog样式的Activity闪退问题]]></title>
-    <url>%2F2018%2F09%2F27%2FAndroid-%E5%85%B3%E4%BA%8E%E4%BD%BF%E7%94%A8-Dialog%E6%A0%B7%E5%BC%8F%E7%9A%84Activity%E9%97%AA%E9%80%80%E9%97%AE%E9%A2%98%2F</url>
-    <content type="text"><![CDATA[问题描述： 在尝试使用 Dialog 风格 Activity 的时候，参考了一篇文章【参考链接】，但是运行时却发生闪退情况。 解决办法： 自己琢磨了一下，发现在使用 Dialog 风格 Activity 时，activity 应该 extends Activity, 而我代码写的是extends AppCompatActivity。原理尚不清楚，坑先挖在这了，等着填。 原来 activity 部分代码： 1234567public class DevDialogActivity extends AppCompatActivity &#123; @Override protected void onCreate(Bundle savedInstanceState) &#123; super.onCreate(savedInstanceState); setContentView(R.layout.activity_dev_dialog); &#125;&#125; 修改后 activity 部分代码： 1234567public class DevDialogActivity extends Activity &#123; @Override protected void onCreate(Bundle savedInstanceState) &#123; super.onCreate(savedInstanceState); setContentView(R.layout.activity_dev_dialog); &#125;&#125;]]></content>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: fragment生命周期与执行hide、show后经历的生命周期</title>
+      <link href="/2018/11/16/Android-fragment%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E4%B8%8E%E6%89%A7%E8%A1%8Chide%E3%80%81show%E5%90%8E%E7%BB%8F%E5%8E%86%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/"/>
+      <url>/2018/11/16/Android-fragment%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E4%B8%8E%E6%89%A7%E8%A1%8Chide%E3%80%81show%E5%90%8E%E7%BB%8F%E5%8E%86%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档：</strong></p><p><a href="https://www.cnblogs.com/zty-Love/p/8656151.html" target="_blank" rel="noopener">Fragment生命周期与Fragment执行hide、show后的生命周期探讨</a></p>]]></content>
+      
+      
       <categories>
-        <category>学习</category>
+          
+          <category> 学习 </category>
+          
       </categories>
-      <tags>
-        <tag>Android</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[Android: 获取系统时间并格式化显示]]></title>
-    <url>%2F2018%2F09%2F27%2FAndroid-%E8%8E%B7%E5%8F%96%E7%B3%BB%E7%BB%9F%E6%97%B6%E9%97%B4%E5%B9%B6%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%98%BE%E7%A4%BA%2F</url>
-    <content type="text"></content>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: 获取当前显示的fragment对象</title>
+      <link href="/2018/11/16/Android-%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E6%98%BE%E7%A4%BA%E7%9A%84fragment%E5%AF%B9%E8%B1%A1/"/>
+      <url>/2018/11/16/Android-%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E6%98%BE%E7%A4%BA%E7%9A%84fragment%E5%AF%B9%E8%B1%A1/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档：</strong></p><p><a href="https://blog.csdn.net/qq_16240935/article/details/41943391" target="_blank" rel="noopener">获取当前显示的fragment对象</a></p><p><a href="https://www.jianshu.com/p/47dedea52897" target="_blank" rel="noopener">Android 通过Activity获取当前显示的Fragment</a></p>]]></content>
+      
+      
       <categories>
-        <category>学习</category>
+          
+          <category> 学习 </category>
+          
       </categories>
-      <tags>
-        <tag>Android</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[Android: 如何让 ViewGroup 监听按键事件]]></title>
-    <url>%2F2018%2F09%2F25%2FAndroid-%E5%A6%82%E4%BD%95%E8%AE%A9-ViewGroup-%E7%9B%91%E5%90%AC%E6%8C%89%E9%94%AE%E4%BA%8B%E4%BB%B6%2F</url>
-    <content type="text"></content>
-  </entry>
-  <entry>
-    <title><![CDATA[[待解决]Android: 关于 Fragment 调用 Fragment 时闪退的问题]]></title>
-    <url>%2F2018%2F09%2F21%2FAndroid-%E5%85%B3%E4%BA%8E-Fragment-%E8%B0%83%E7%94%A8-Fragment-%E6%97%B6%E9%97%AA%E9%80%80%E7%9A%84%E9%97%AE%E9%A2%98%2F</url>
-    <content type="text"><![CDATA[​ 问题描述： 在使用 Fragment 调用新的 Fragment 时，遇到程序闪退的情况。代码如下： 1dddd 解决方法： 貌似是]]></content>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Linux: chmod命令</title>
+      <link href="/2018/11/16/Linux-chmod%E5%91%BD%E4%BB%A4/"/>
+      <url>/2018/11/16/Linux-chmod%E5%91%BD%E4%BB%A4/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档：</strong></p><p><a href="https://blog.csdn.net/u011402596/article/details/42250115" target="_blank" rel="noopener">linux命令之chmod用法</a></p>]]></content>
+      
+      
       <categories>
-        <category>学习</category>
+          
+          <category> 学习 </category>
+          
       </categories>
-      <tags>
-        <tag>Android</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[Android: 关于Fragment初始化闪退问题]]></title>
-    <url>%2F2018%2F09%2F19%2FAndroid-%E5%85%B3%E4%BA%8EFragment%E5%88%9D%E5%A7%8B%E5%8C%96%E9%97%AA%E9%80%80%E9%97%AE%E9%A2%98%2F</url>
-    <content type="text"><![CDATA[参考文档： Android中如何在Fragment中添加点击事件切换新的Fragment 问题描述： 在 Fragment 中，有一些控件（TextView）是需要动态赋值的，然后天真的我直接在 onCreateView中根据用setText()方法 来做。结果就是——闪退。最后发现取到的 TextView 是 null 。 解决办法： 其实有一个方法，是onActivityCreated() ，在里面为控件赋值就 OK 的。该方法是等布局加载完成之后，才能通过 ID 取到 Fragment 中的控件。相当于：我在水果店里买东西，伸手想从一个果篮里拿水果出来，但是发现篮子里什么都没有，等店员往里面放了商品之后，我才能在篮子里挑选自己想要的东西。 具体代码如下： 12345678910111213141516public class FragmentMyInfo extends Fragment&#123; @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)&#123; View view = inflater.inflate(R.layout.fragment_my_info, container,false); return view; &#125; public void onActivityCreated(@Nullable Bundle savedInstanceState) &#123; super.onActivityCreated(savedInstanceState); //这里写要动态赋值的代码 TextView devType = (TextView) getActivity().findViewById(R.id.dev_type); Log.d(TAG, &quot;onCreateView: &quot; + devType); devType.setText(R.string.dev_type); &#125;&#125; 多说一句： title 没有取好，但暂时还不知道怎么用精准且简洁的语言来描述这个问题；第一次尝试用比喻来讲一个问题，也不知道比喻使用恰不恰当。之后想到了更好的都会改。 菜鸟发出一声凄厉的尖叫]]></content>
+      
+      
+        <tags>
+            
+            <tag> Linux </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: sp 还是dp？</title>
+      <link href="/2018/11/16/Android-sp-%E8%BF%98%E6%98%AFdp%EF%BC%9F/"/>
+      <url>/2018/11/16/Android-sp-%E8%BF%98%E6%98%AFdp%EF%BC%9F/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档：</strong></p><p><a href="https://www.jianshu.com/p/e89bc2890136" target="_blank" rel="noopener">Android下设置文字大小用sp还是dp</a></p>]]></content>
+      
+      
       <categories>
-        <category>学习</category>
+          
+          <category> 学习 </category>
+          
       </categories>
-      <tags>
-        <tag>Android</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[Android: Fragment详解]]></title>
-    <url>%2F2018%2F09%2F18%2FAndroid-Fragment%E8%AF%A6%E8%A7%A3%2F</url>
-    <content type="text"><![CDATA[背景介绍： ​ 最近有个练习，考虑用 Fragment 来做，所以研究了一下。 参考文档： Android基础：Fragment，看这篇就够了 利用Bundle完成Activity向Fragment传值 Android中如何在Fragment中添加点击事件切换新的Fragment Android 文本动态处理方法，TextView动态赋值 可复写的方法： onCreateView()，返回 Fragment 的 UI 布局 Tips: 如果在创建 Fragment 时，需要传入参数，建议使用 setArguments()]]></content>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: getSupportFragmentManager &amp; gerFragmentManager</title>
+      <link href="/2018/11/16/Android-getSupportFragmentManager-gerFragmentManager/"/>
+      <url>/2018/11/16/Android-getSupportFragmentManager-gerFragmentManager/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档：</strong> </p><p><a href="https://www.cnblogs.com/earl-yongchang/p/5747860.html" target="_blank" rel="noopener">在activity中无法使用getFragmentManager()</a></p><p><a href=""></a></p>]]></content>
+      
+      
       <categories>
-        <category>学习</category>
+          
+          <category> 学习 </category>
+          
       </categories>
-      <tags>
-        <tag>Android</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[Android: 控件篇（一）]]></title>
-    <url>%2F2018%2F09%2F18%2FAndroid-%E6%8E%A7%E4%BB%B6%E7%AF%87%EF%BC%88%E4%B8%80%EF%BC%89%2F</url>
-    <content type="text"><![CDATA[背景介绍： 本文仅记录学习 Android 过程中遇到的各类控件，大概以后会分类总结一下吧，现在只是无脑填充。 1. 显示时间的容器：TextClock参考文档： Android 实时显示时间 问题描述： 开发过程中需要一个能够显示时间的 TextView，时间分为 24 小时和 12 小时两种格式。类似于：[下午11:08]、[23:08]。 解决办法： Google 一下，你就知道。哈哈哈哈开个玩笑，不过确实是 Google 出来的。使用 TextClock 控件，注意：听说这控件 ==API &gt;= 17== 才可用，代码如下： 123456&lt;TextClock style="@style/LayoutContentStyle" android:layout_weight="5" android:gravity="center" android:format12Hour="aa hh:mm" android:format24Hour="hh:mm"/&gt; 其中 style 是用的自己写的一个样式，我们只用关注 format12Hour &amp; format24Hour两个属性即可。 format12Hour，表示12小时制的显示格式，”aa” 表示显示上午/下午，其它大家读懂。 format24Hour，表示24小时制的显示格式。 如果需要显示日期，用 &quot;yyyy/MM/dd hh:mm:ss&quot; 即可。]]></content>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android：神奇的属性篇</title>
+      <link href="/2018/11/16/Android%EF%BC%9A%E7%A5%9E%E5%A5%87%E7%9A%84%E5%B1%9E%E6%80%A7%E7%AF%87/"/>
+      <url>/2018/11/16/Android%EF%BC%9A%E7%A5%9E%E5%A5%87%E7%9A%84%E5%B1%9E%E6%80%A7%E7%AF%87/</url>
+      
+        <content type="html"><![CDATA[<h4 id="1-ListView-篇"><a href="#1-ListView-篇" class="headerlink" title="1. ListView 篇"></a>1. ListView 篇</h4><p><strong><code>android:listselector</code> </strong></p><p>​    该属性可以自定义选中属性,如：<code>android:listselector=&quot;@drawable/xx_selector&quot;</code></p><p><strong><code>android:divider</code> </strong></p><p>​    该属性可以自定义item分割线 的样式，如：<code>android:divider=&quot;@null&quot;</code> </p><p><strong><code>android:dividerHeight</code> </strong></p><p>​    该属性可以自定义item之间的垂直距离，如：<code>android:dividerHeight=&quot;16dp&quot;</code></p>]]></content>
+      
+      
       <categories>
-        <category>学习</category>
+          
+          <category> 学习 </category>
+          
       </categories>
-      <tags>
-        <tag>Android</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[Git: HttpRequestException encountered]]></title>
-    <url>%2F2018%2F09%2F18%2FGit-HttpRequestException-encountered%2F</url>
-    <content type="text"><![CDATA[问题描述： 之前 git 用得好好的，一个周末回来，git push 的时候就报HttpRequestException encountered.这种错，网上查了 下解决办法 ↓ 解决办法： 点击下载最新的 GCM 下载后安装好就行了…这个问题好像只有 windows 会出现，原理的话，可以看看参考文章。 参考： [git push fatal: HttpRequestException encountered]]]></content>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: 获取当前焦点位置</title>
+      <link href="/2018/11/16/Android-%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E7%84%A6%E7%82%B9%E4%BD%8D%E7%BD%AE/"/>
+      <url>/2018/11/16/Android-%E8%8E%B7%E5%8F%96%E5%BD%93%E5%89%8D%E7%84%A6%E7%82%B9%E4%BD%8D%E7%BD%AE/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档：</strong> <a href="https://blog.csdn.net/youlongno1/article/details/67639611" target="_blank" rel="noopener">Android获取当前焦点的位置，查找焦点的位置</a></p>]]></content>
+      
+      
       <categories>
-        <category>学习</category>
+          
+          <category> 学习 </category>
+          
       </categories>
-      <tags>
-        <tag>Git</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[Android: TextView 样式问题]]></title>
-    <url>%2F2018%2F09%2F17%2FAndroid-TextView-%E6%A0%B7%E5%BC%8F%E9%97%AE%E9%A2%98%2F</url>
-    <content type="text"><![CDATA[背景介绍本文单纯记录学习 Android 路上遇到的样式问题。 1. 为 TextView 文字设置两个对齐方向解决办法： Android 中的 gravity 属性阔以这样写： android:gravity=&quot;center_vertical|right&quot; ，表示垂直居中，水平靠右。如果需要其它对其方向，可以参考。 2. EditView 去掉边框（下划线）解决办法： 属性这样写：android:background=&quot;@null&quot; 。 3. 居中问题需要控件中的内容居中： 使用 android:gravity 属性 需要控件在父布局中居中： 使用 android:layout_gravity 属性 4. 边距问题关于边距，有两个属性可用：margin 和 padding margin: 指控件与控件的距离。 padding: 指控件的内边距，肚子里面装的文本之类的东西与边框的距离。 ==如果仍然迷惑，可以打开 Chrome，Windows 下按 F12 进入调试模式，看看标准的盒子模型== 当然直接用搜索引擎搜标准盒子模型也可以 ↑↑↑ 5. 关于 visibility 属性的使用控件的 visibility 属性决定该控件是否可见，当值为 android:visibility=&quot;invisible&quot;时，控件不可见，==但控件仍然在页面上占据位置==。 代码中动态设置控件是否可见： 使用view.setVisibility(int)方法，该方法接收一个 int 值，有两个可选项：View.VISIBLE &amp; View.INVISIBLE. 也就是说，如果需要设置控件可见，可以这样写 12TextView tv = (TextView) findViewById(R.id.xxx);tv.setVisibility(View.VISIBLE); //不可见同理 ​]]></content>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>重温一遍做项目的流程</title>
+      <link href="/2018/11/14/%E9%87%8D%E6%B8%A9%E4%B8%80%E9%81%8D%E5%81%9A%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%B5%81%E7%A8%8B/"/>
+      <url>/2018/11/14/%E9%87%8D%E6%B8%A9%E4%B8%80%E9%81%8D%E5%81%9A%E9%A1%B9%E7%9B%AE%E7%9A%84%E6%B5%81%E7%A8%8B/</url>
+      
+        <content type="html"><![CDATA[<ol><li><p>将 <code>jar</code> 包放进 <code>libs</code> 文件夹，然后<code>File--&gt;Project Structure--&gt;modules--&gt;Dependencies--&gt;右上角“+”号， jar Dependency， 选中对应文件，点击ok--&gt;scope选择compile only，点击ok</code></p></li><li><p>在项目的<code>build.gradle</code>中找到 <code>allprojects</code> ，在里面加入以下代码：</p></li></ol>   <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">gradle.projectsEvaluated &#123;</span><br><span class="line">        tasks.withType(JavaCompile)&#123;</span><br><span class="line">            options.compilerArgs.add(</span><br><span class="line">                <span class="string">'-Xbootclasspath/p:模块名/libs/jar包名'</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>   <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">allprojects &#123;</span><br><span class="line">====复制代码到这个位置====</span><br><span class="line">    repositories &#123;</span><br><span class="line">    google()</span><br><span class="line">        jcenter()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><ol start="3"><li><p>如果在代码中出现报红，可在<code>module</code>下找到<code>xxx.iml</code>文件，添加以下代码：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;orderEntry type=<span class="string">"library"</span> exported=<span class="string">""</span> name=<span class="string">"jar包名"</span> level=<span class="string">"project"</span> /&gt;</span><br></pre></td></tr></table></figure><p>不过我还是无法解决报红问题啦，但是不影响代码跑起来就行</p></li><li><p>申请系统权限：在<code>AndroidMainfest.xml</code> 中首层标签中添加以下代码：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">android:sharedUserId=<span class="string">"android.uid.system"</span></span><br></pre></td></tr></table></figure><p>然后在<code>module</code> 的 <code>build.gradle</code> 内添加以下代码：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">signingConfigs &#123;</span><br><span class="line">    release &#123;</span><br><span class="line">        <span class="function">storeFile <span class="title">file</span><span class="params">(<span class="string">"F:/signed/test.jks"</span>)</span></span></span><br><span class="line"><span class="function">        storePassword '123456'</span></span><br><span class="line"><span class="function">        keyAlias 'ch'</span></span><br><span class="line"><span class="function">        keyPassword '123456'</span></span><br><span class="line"><span class="function">    &#125;</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">    debug </span>&#123;</span><br><span class="line">        <span class="function">storeFile <span class="title">file</span><span class="params">(<span class="string">"F:/signed/test.jks"</span>)</span></span></span><br><span class="line"><span class="function">        storePassword '123456'</span></span><br><span class="line"><span class="function">        keyAlias 'ch'</span></span><br><span class="line"><span class="function">        keyPassword '123456'</span></span><br><span class="line"><span class="function">    &#125;</span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure><p>在 <code>defaultConfig</code>后面添加就行</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">defaultConfig &#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">    ====这里添加====</span><br><span class="line"> buildTypes &#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></li><li><p>在<code>Build</code> 下选择 <code>Generate Signed APK...</code> 点击<code>Create New</code>， 新建一个密钥，<code>Key store path</code> 需要与上面配置的路径一样，<code>Password</code> 与上面的<code>storePassword</code>相同，<code>alias</code>与上面配置的<code>keyAlias</code>相同，<code>Password</code> 与上面配置的<code>keyPassword</code> 相同，其余任性填，确认后，点击面板的<code>next</code> ，找到<code>Signature Version</code> 勾选上 <code>V2(Full APK Signature)</code> 点击确定。然后就能直接在AS上往机顶盒里推<code>APK</code> 了</p></li></ol>]]></content>
+      
+      
       <categories>
-        <category>学习</category>
+          
+          <category> 工作 </category>
+          
       </categories>
-      <tags>
-        <tag>Android</tag>
-      </tags>
-  </entry>
+      
+      
+        <tags>
+            
+            <tag> 项目流程 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>网络测试步骤</title>
+      <link href="/2018/11/13/%E7%BD%91%E7%BB%9C%E6%B5%8B%E8%AF%95%E6%AD%A5%E9%AA%A4/"/>
+      <url>/2018/11/13/%E7%BD%91%E7%BB%9C%E6%B5%8B%E8%AF%95%E6%AD%A5%E9%AA%A4/</url>
+      
+        <content type="html"><![CDATA[<ol><li><p>进入页面查看是否根据当前连接的网络进行相应的显示（已连接位置对否，焦点是否正确  </p></li><li><p>进入静态IP</p><ul><li><p>点击取消，查看当前网络状态是否改变，如果改变，则有bug</p></li><li><p>输入错误的IP，看能否正确判断</p></li><li>输入错误的netmask</li><li>输入错误的gateway</li><li>输入错误的dns1</li><li>输出错误的dns2</li><li>输入gateway与ip不在同一个网段</li><li>输入正确的格式，尝试连接静态IP，看能够连接上网络</li><li>如果用户在已经连接静态IP的情况下，没有修改任何信息，再次点击“确定”，提示用户没有修改任何信息</li></ul></li><li><p>进入pppoe</p><ul><li>不输入用户名及密码，查看提示</li><li>输入用户名密码，查看提示</li><li>退出该界面，查看上一层网络连接状态是否改变</li><li>如果用户在pppoe已经连接上的情况，不改变用户名和密码再次点击“确定”按钮，提示已经连接</li></ul></li><li><p>断开网线，查看提示</p></li><li><p>点击连接pppoe，dhcp，静态ip，查看是否提示网线没有插上</p></li><li><p>插上网线，查看提示是否为网线已插入，是否会更新网络状态</p></li><li><p>插上网线，但不联网，查看提示状态已经网络更新状态</p></li><li><p>在dhcp连接的情况下，点击连接dhcp，看提示</p></li><li><p>在dhcp没有链接的情况下，点击连接dhcp，看提示</p></li><li><p>在有网线，但没网的情况下，把所有以上逻辑测一遍，看有什么问题</p></li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> 工作 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 测试 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: style复用共有属性</title>
+      <link href="/2018/11/12/Android-style%E5%A4%8D%E7%94%A8%E5%85%B1%E6%9C%89%E5%B1%9E%E6%80%A7/"/>
+      <url>/2018/11/12/Android-style%E5%A4%8D%E7%94%A8%E5%85%B1%E6%9C%89%E5%B1%9E%E6%80%A7/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档：</strong> <a href="https://www.cnblogs.com/WJQ2017/p/7617438.html" target="_blank" rel="noopener">Android Style 继承</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Java: 正则表达式</title>
+      <link href="/2018/11/08/Java-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/"/>
+      <url>/2018/11/08/Java-%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档：</strong> <a href="http://www.runoob.com/java/java-regular-expressions.html" target="_blank" rel="noopener">Java 正则表达式</a></p><p>【.】 通配符，匹配任一个字符</p><p>【\s+】 匹配多个数字</p><p>【\d+】 匹配一个或多个数字</p><p>【^】 定义以什么开始</p><p>【$】 定义以什么结尾 </p><p>【?】 0次或一次匹配</p><p>【+】 一次或多次匹配</p><p>【{n}】正好匹配n次</p><p>【{n,}】至少匹配n次</p><p>【{n, m}】 匹配n-m次</p><p>【x|y】 匹配x或y</p><p>【[xyz]】 匹配包括的任意字符</p><p>【^[xyz]】 匹配不包括的任意字符，==反向字符集==</p><p>【[a-z]】 匹配a-z的字符范围内的任意字符</p><p>\ 转义符</p><h4 id="捕获组"><a href="#捕获组" class="headerlink" title="捕获组"></a>捕获组</h4><p>（）在小括号里创建，把多个字符当成单独单元进行处理</p><p>例如: (dog)</p><h4 id="小知识"><a href="#小知识" class="headerlink" title="小知识"></a>小知识</h4><p>在其他语言中，\ 表示：<strong>我想要在正则表达式中插入一个普通的（字面上的）反斜杠，请不要给它任何特殊的意义。</strong></p><p>在 Java 中，\ 表示：<strong>我要插入一个正则表达式的反斜线，所以其后的字符具有特殊的意义。</strong></p><p>所以，在其他的语言中（如Perl），一个反斜杠 \ 就足以具有转义的作用，而在 Java 中正则表达式中则需要有两个反斜杠才能被解析为其他语言中的转义作用。也可以简单的理解在 Java 的正则表达式中，两个 \\ 代表其他语言中的一个 \，这也就是为什么表示一位数字的正则表达式是 \\d，而表示一个普通的反斜杠是 \\\\。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Java </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Java: 判断IP是否合法</title>
+      <link href="/2018/11/08/Java-%E5%88%A4%E6%96%ADIP%E6%98%AF%E5%90%A6%E5%90%88%E6%B3%95/"/>
+      <url>/2018/11/08/Java-%E5%88%A4%E6%96%ADIP%E6%98%AF%E5%90%A6%E5%90%88%E6%B3%95/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档：</strong> <a href="https://blog.csdn.net/zhuoya_/article/details/79673181" target="_blank" rel="noopener">笔试1–判断一个IP地址是否合法</a></p><p><a href="https://blog.csdn.net/u014259820/article/details/78833196" target="_blank" rel="noopener">【面试题】算法题：判断一个IP是否是合法</a> </p><p><a href="http://blog.51cto.com/6930123/2112748" target="_blank" rel="noopener">IP地址和子网划分学习笔记之《子网掩码详解》</a></p><h1 id="IPv4中IP地址分类"><a href="#IPv4中IP地址分类" class="headerlink" title="IPv4中IP地址分类"></a><a href="https://www.cnblogs.com/qiaoconglovelife/p/5349486.html" target="_blank" rel="noopener">IPv4中IP地址分类</a></h1>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Java </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>计算机网络: 初始DNS服务器哪里来的</title>
+      <link href="/2018/11/05/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E5%88%9D%E5%A7%8BDNS%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%93%AA%E9%87%8C%E6%9D%A5%E7%9A%84/"/>
+      <url>/2018/11/05/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-%E5%88%9D%E5%A7%8BDNS%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%93%AA%E9%87%8C%E6%9D%A5%E7%9A%84/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档：</strong> <a href="https://www.wolfcstech.com/2017/04/13/%E5%88%9D%E5%A7%8BDNS%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%9C%B0%E5%9D%80%E6%98%AF%E5%93%AA%E9%87%8C%E6%9D%A5%E7%9A%84/" target="_blank" rel="noopener">初始DNS服务器地址是哪里来的？</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 计算机网络 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: 数据库操作 Cursor</title>
+      <link href="/2018/11/02/Android-%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C-Cursor/"/>
+      <url>/2018/11/02/Android-%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C-Cursor/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档：</strong> <a href="https://blog.csdn.net/buaaroid/article/details/46865223" target="_blank" rel="noopener">Android 数据库SQLite Cursor数据遍历读取</a></p><p><a href="https://www.jianshu.com/p/ba722c2271d6" target="_blank" rel="noopener">Android Cursor的正确遍历方法</a></p><h1 id="Android-sqlite-cursor的遍历"><a href="#Android-sqlite-cursor的遍历" class="headerlink" title="Android sqlite cursor的遍历"></a><a href="https://www.cnblogs.com/wuyou/p/3694547.html" target="_blank" rel="noopener">Android sqlite cursor的遍历</a></h1><p><a href="https://blog.csdn.net/johnwcheung/article/details/72853644" target="_blank" rel="noopener">Android cursor遍历数据</a></p><h1 id="Android笔记——关于Cursor类的介绍"><a href="#Android笔记——关于Cursor类的介绍" class="headerlink" title="Android笔记——关于Cursor类的介绍"></a><a href="https://www.cnblogs.com/wugu-ren/p/6113773.html" target="_blank" rel="noopener">Android笔记——关于Cursor类的介绍</a></h1><p><a href="https://blog.csdn.net/Moruna/article/details/7857743" target="_blank" rel="noopener">Android应用开发—关于SQL中通过cursor获取指定id的内容</a></p><h1 id="单独谈谈-Android-Cursor-的使用细节"><a href="#单独谈谈-Android-Cursor-的使用细节" class="headerlink" title="单独谈谈 Android Cursor 的使用细节"></a><a href="https://www.cnblogs.com/yihujiu/p/6163398.html" target="_blank" rel="noopener">单独谈谈 Android Cursor 的使用细节</a></h1>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: WindowManager</title>
+      <link href="/2018/11/01/Android-WindowManager/"/>
+      <url>/2018/11/01/Android-WindowManager/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档</strong> <a href="http://www.voidcn.com/article/p-qzunqwfk-dg.html" target="_blank" rel="noopener">android之WindowManager学习</a> </p><p><a href="http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2012/1105/509.html" target="_blank" rel="noopener">WindowManager和WindowManager.LayoutParams的使用以及实现悬浮窗口的方法</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: Service的线程问题</title>
+      <link href="/2018/11/01/Android-Service%E7%9A%84%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98/"/>
+      <url>/2018/11/01/Android-Service%E7%9A%84%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档</strong> <a href="https://blog.csdn.net/u014088294/article/details/49907385" target="_blank" rel="noopener">Android 你不知道的Service（服务） &amp; Thread（线程）</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: AlarmManager</title>
+      <link href="/2018/11/01/Android-AlarmManager/"/>
+      <url>/2018/11/01/Android-AlarmManager/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档</strong> <a href="https://juejin.im/entry/588628e8128fe10065eb62a9" target="_blank" rel="noopener">关于使用 AlarmManager 的注意事项</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: 定时器</title>
+      <link href="/2018/11/01/Android-%E5%AE%9A%E6%97%B6%E5%99%A8/"/>
+      <url>/2018/11/01/Android-%E5%AE%9A%E6%97%B6%E5%99%A8/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档</strong> <a href="https://blog.csdn.net/u010502101/article/details/79318380" target="_blank" rel="noopener">Timer和TimerTask定时器使用</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: 日期的格式化</title>
+      <link href="/2018/11/01/Android-%E6%97%A5%E6%9C%9F%E7%9A%84%E6%A0%BC%E5%BC%8F%E5%8C%96/"/>
+      <url>/2018/11/01/Android-%E6%97%A5%E6%9C%9F%E7%9A%84%E6%A0%BC%E5%BC%8F%E5%8C%96/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档</strong> <a href="https://blog.csdn.net/kluing/article/details/41553527" target="_blank" rel="noopener">android格式化日期与时间戳学习</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: SystemProperties设置/取得系统属性</title>
+      <link href="/2018/11/01/Android-SystemProperties%E8%AE%BE%E7%BD%AE-%E5%8F%96%E5%BE%97%E7%B3%BB%E7%BB%9F%E5%B1%9E%E6%80%A7/"/>
+      <url>/2018/11/01/Android-SystemProperties%E8%AE%BE%E7%BD%AE-%E5%8F%96%E5%BE%97%E7%B3%BB%E7%BB%9F%E5%B1%9E%E6%80%A7/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档</strong> <a href="https://blog.csdn.net/ameyume/article/details/8056492" target="_blank" rel="noopener">Android SystemProperties设置/取得系统属性的用法总结</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: Cursor</title>
+      <link href="/2018/11/01/Android-Cursor/"/>
+      <url>/2018/11/01/Android-Cursor/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档</strong> <a href="https://www.jianshu.com/p/b290eecbd87e" target="_blank" rel="noopener">Android数据库操作—-Cursor</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: 自定义 AlertDialog</title>
+      <link href="/2018/10/31/Android-%E8%87%AA%E5%AE%9A%E4%B9%89-AlertDialog/"/>
+      <url>/2018/10/31/Android-%E8%87%AA%E5%AE%9A%E4%B9%89-AlertDialog/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档：</strong> <a href="https://www.jianshu.com/p/c9346e82a334" target="_blank" rel="noopener">AlertDialog/AlertDialog.builder 以及 自定义AlertDialog方法</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: 倒计时的实现</title>
+      <link href="/2018/10/31/Android-%E5%80%92%E8%AE%A1%E6%97%B6%E7%9A%84%E5%AE%9E%E7%8E%B0/"/>
+      <url>/2018/10/31/Android-%E5%80%92%E8%AE%A1%E6%97%B6%E7%9A%84%E5%AE%9E%E7%8E%B0/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档：</strong> <a href="https://juejin.im/post/58bead54ac502e006b2fe6e0" target="_blank" rel="noopener">Android 倒计时的五种实现方式</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: getCahceDir() &amp; getFilesDir()</title>
+      <link href="/2018/10/30/Android-getCahceDir-getFilesDir/"/>
+      <url>/2018/10/30/Android-getCahceDir-getFilesDir/</url>
+      
+        <content type="html"><![CDATA[<p><strong>1. getCacheDir()</strong></p><p>一般是<code>Context.getCacheDir()</code>, 会返回当前应用的缓存文件夹，路径为 <code>data/data/project-name/cache</code></p><p><strong>2. getFilesDir()</strong></p><p>一般是<code>Context.getFilesDir()</code>, 会返回当前应用的数据存储文件夹，路径为 <code>data/data/project-name/files</code> </p><p>↑↑↑ 以上两个方法返回的是文件夹路径，文件夹！！</p><p>==ATTENSION==</p><p>对文件的读写要另开一个线程来写。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Andorid </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Java: File类中的list()和listFiles()</title>
+      <link href="/2018/10/27/Java-File%E7%B1%BB%E4%B8%AD%E7%9A%84list-%E5%92%8ClistFiles/"/>
+      <url>/2018/10/27/Java-File%E7%B1%BB%E4%B8%AD%E7%9A%84list-%E5%92%8ClistFiles/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档：</strong> <a href="https://www.cnblogs.com/keyi/p/6293141.html" target="_blank" rel="noopener">File类中的list()和listFiles()方法</a></p><ul><br>    <li>list()方法是返回某个目录下的所有文件和目录的文件名，返回的是String数组</li><br>    <li>istFiles()方法是返回某个目录下所有文件和目录的绝对路径，返回的是File数组</li><br></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Java </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: handler消息处理</title>
+      <link href="/2018/10/26/Android-handler%E6%B6%88%E6%81%AF%E5%A4%84%E7%90%86/"/>
+      <url>/2018/10/26/Android-handler%E6%B6%88%E6%81%AF%E5%A4%84%E7%90%86/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档：</strong> <a href="https://blog.csdn.net/shanglizhangrui/article/details/51859406" target="_blank" rel="noopener">【Android消息处理机制】Handler中sendEmptyMessage与sendMessage的区别和sendMessageAtTime()与sendEmptyMessageDelay()区别</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>ANdroid: DispalyMetrics</title>
+      <link href="/2018/10/26/ANdroid-DispalyMetrics/"/>
+      <url>/2018/10/26/ANdroid-DispalyMetrics/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档：</strong> <a href="https://blog.csdn.net/zhangqijie001/article/details/5894872" target="_blank" rel="noopener">Android获取屏幕分辨率及DisplayMetrics简介</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: handler内存泄漏问题</title>
+      <link href="/2018/10/26/Android-handler%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E9%97%AE%E9%A2%98/"/>
+      <url>/2018/10/26/Android-handler%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E9%97%AE%E9%A2%98/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档：</strong> <a href="https://www.jianshu.com/p/1b39416f1508" target="_blank" rel="noopener">安卓Handler当做内部类，导致内存泄露的问题</a></p><p><a href="https://blog.csdn.net/u013356254/article/details/52463636" target="_blank" rel="noopener">Handler造成Activity泄漏，用弱引用真的有用么?</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: 关于时间的广播</title>
+      <link href="/2018/10/25/Android-%E5%85%B3%E4%BA%8E%E6%97%B6%E9%97%B4%E7%9A%84%E5%B9%BF%E6%92%AD/"/>
+      <url>/2018/10/25/Android-%E5%85%B3%E4%BA%8E%E6%97%B6%E9%97%B4%E7%9A%84%E5%B9%BF%E6%92%AD/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档：</strong> <a href="https://blog.csdn.net/wuqingyidongren/article/details/51899201" target="_blank" rel="noopener">安卓时间广播</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: 拓展设备广播</title>
+      <link href="/2018/10/24/Android-%E6%8B%93%E5%B1%95%E8%AE%BE%E5%A4%87%E5%B9%BF%E6%92%AD/"/>
+      <url>/2018/10/24/Android-%E6%8B%93%E5%B1%95%E8%AE%BE%E5%A4%87%E5%B9%BF%E6%92%AD/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档：</strong> <a href="https://www.cnblogs.com/andy-songwei/p/7219065.html" target="_blank" rel="noopener">Sdcard插拔、状态广播监听，Android文件系统，Android存储器相关知识总结</a></p><p>此次用到三个：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">intentFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: 蓝牙</title>
+      <link href="/2018/10/24/Android-%E8%93%9D%E7%89%99/"/>
+      <url>/2018/10/24/Android-%E8%93%9D%E7%89%99/</url>
+      
+        <content type="html"><![CDATA[<p>参考文档：<a href="https://developer.android.com/guide/topics/connectivity/bluetooth?hl=zh-cn" target="_blank" rel="noopener">蓝牙</a></p><p>官方文档说得很清楚啊。。。</p><p><strong>注意：</strong></p><pre><code>1. 被配对和被连接的区别2. startDiscovery() 为异步进程，并且会立即返回一个布尔值，表示是否已成功启动发现操作，一个流程为12s。</code></pre>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>日常-今天又学习了什么呢</title>
+      <link href="/2018/10/18/%E6%97%A5%E5%B8%B8-%E4%BB%8A%E5%A4%A9%E5%8F%88%E5%AD%A6%E4%B9%A0%E4%BA%86%E4%BB%80%E4%B9%88%E5%91%A2/"/>
+      <url>/2018/10/18/%E6%97%A5%E5%B8%B8-%E4%BB%8A%E5%A4%A9%E5%8F%88%E5%AD%A6%E4%B9%A0%E4%BA%86%E4%BB%80%E4%B9%88%E5%91%A2/</url>
+      
+        <content type="html"><![CDATA[<ol><li>Broadcast</li><li>Thread</li><li>Service</li><li>Handler</li><li>AsyncTask</li><li>ServiceIntent</li></ol><p>StateMachine 是什么</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 日常 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    <entry>
+      <title>Android: 日常新增不懂名词</title>
+      <link href="/2018/10/18/Android-%E6%97%A5%E5%B8%B8%E6%96%B0%E5%A2%9E%E4%B8%8D%E6%87%82%E5%90%8D%E8%AF%8D/"/>
+      <url>/2018/10/18/Android-%E6%97%A5%E5%B8%B8%E6%96%B0%E5%A2%9E%E4%B8%8D%E6%87%82%E5%90%8D%E8%AF%8D/</url>
+      
+        <content type="html"><![CDATA[<p>set&lt;&gt;: </p><p><strong>参考链接：</strong> <a href="https://www.cnblogs.com/xiaxj/p/7891963.html" target="_blank" rel="noopener">java中Set的用法</a></p>]]></content>
+      
+      
+      
+    </entry>
+    
+    <entry>
+      <title>Android: 如何在Service里使用Context</title>
+      <link href="/2018/10/17/Android-%E5%A6%82%E4%BD%95%E5%9C%A8Service%E9%87%8C%E4%BD%BF%E7%94%A8Context/"/>
+      <url>/2018/10/17/Android-%E5%A6%82%E4%BD%95%E5%9C%A8Service%E9%87%8C%E4%BD%BF%E7%94%A8Context/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档：</strong> <a href="https://blog.csdn.net/tujidi1csd/article/details/55683223" target="_blank" rel="noopener">在Service中获得Context</a></p><p><strong>使用方法：</strong> <code>Service</code> 本身就是 <code>Context</code> 的实现，所以只需要调用 <code>this</code>，示例代码如下：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* EthernetManager ethernetManager = (EthernetManager) context.getSystemService(</span></span><br><span class="line"><span class="comment">                Context.ETHERNET_SERVICE);</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">EthernetManager ethernetManager = (EthernetManager) <span class="keyword">this</span>.getSystemService(</span><br><span class="line">                Context.ETHERNET_SERVICE);</span><br></pre></td></tr></table></figure><h3 id="1-在AsyncTask中使用context"><a href="#1-在AsyncTask中使用context" class="headerlink" title="1. 在AsyncTask中使用context"></a>1. 在AsyncTask中使用context</h3><p>传入<code>Context</code>，在<code>doInBackground(Context... params){}</code>中调用就好啦。</p><h3 id="Android-多线程之IntentService-完全详解"><a href="#Android-多线程之IntentService-完全详解" class="headerlink" title="Android 多线程之IntentService 完全详解"></a>Android 多线程之IntentService 完全详解</h3><p><strong>参考文档：</strong> <a href="https://blog.csdn.net/javazejian/article/details/52426425" target="_blank" rel="noopener">https://blog.csdn.net/javazejian/article/details/52426425</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Andorid </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: 父控件拦截子控件点击事件问题</title>
+      <link href="/2018/10/12/Android-%E7%88%B6%E6%8E%A7%E4%BB%B6%E6%8B%A6%E6%88%AA%E5%AD%90%E6%8E%A7%E4%BB%B6%E7%82%B9%E5%87%BB%E4%BA%8B%E4%BB%B6%E9%97%AE%E9%A2%98/"/>
+      <url>/2018/10/12/Android-%E7%88%B6%E6%8E%A7%E4%BB%B6%E6%8B%A6%E6%88%AA%E5%AD%90%E6%8E%A7%E4%BB%B6%E7%82%B9%E5%87%BB%E4%BA%8B%E4%BB%B6%E9%97%AE%E9%A2%98/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    <entry>
+      <title>Android Studio 编译报错汇总</title>
+      <link href="/2018/10/10/Android-Studio-%E7%BC%96%E8%AF%91%E6%8A%A5%E9%94%99%E6%B1%87%E6%80%BB/"/>
+      <url>/2018/10/10/Android-Studio-%E7%BC%96%E8%AF%91%E6%8A%A5%E9%94%99%E6%B1%87%E6%80%BB/</url>
+      
+        <content type="html"><![CDATA[<h4 id="1-错误：对findViewById的引用不明确"><a href="#1-错误：对findViewById的引用不明确" class="headerlink" title="1. 错误：对findViewById的引用不明确"></a>1. 错误：对findViewById的引用不明确</h4><p><strong>情景：</strong>在导入一个第三方 jar 包后，编译出现如下错误</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">错误: 对findViewById的引用不明确</span><br><span class="line">Activity 中的方法 findViewById(<span class="keyword">int</span>) 和 AppCompatActivity 中的方法 &lt;T&gt;findViewById(<span class="keyword">int</span>) 都匹配</span><br><span class="line">其中, T是类型变量:</span><br><span class="line">T扩展已在方法 &lt;T&gt;findViewById(<span class="keyword">int</span>)中声明的View</span><br></pre></td></tr></table></figure><p><strong>原因：</strong> jar 包和工程使用的 sdk 版本不同</p><p><strong>解决办法：</strong>在 module 下的 <code>build.gradle</code> 文件里添加如下代码</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">configurations.all &#123;</span><br><span class="line">    resolutionStrategy.eachDependency &#123; DependencyResolveDetails details -&gt;</span><br><span class="line">        def requested = details.requested</span><br><span class="line">        <span class="keyword">if</span> (requested.group == <span class="string">'com.android.support'</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!requested.name.startsWith(<span class="string">"multidex"</span>)) &#123;</span><br><span class="line">                <span class="comment">//这里指定需要统一的依赖版本,这里统一为26.0.0-alpha1</span></span><br><span class="line">                details.useVersion <span class="string">'26.0.0-alpha1'</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>然后 sync 一下就行了。</p><h3 id="2-W-System-err-at-android-os-Parcel-readException-Parcel-java-1472"><a href="#2-W-System-err-at-android-os-Parcel-readException-Parcel-java-1472" class="headerlink" title="2. W/System.err:     at android.os.Parcel.readException(Parcel.java:1472)"></a>2. W/System.err:     at android.os.Parcel.readException(Parcel.java:1472)</h3><p><strong>参考文档：</strong>  <a href="https://www.cnblogs.com/pillowzhou/p/4909281.html" target="_blank" rel="noopener">关于使用AIDL出现空指针的解决办法</a> </p><p><strong>情景：</strong> 在使用<code>PppoeManager.setMode()</code> 和 <code>PppoeManager.connect()</code>过程中，报如下错误</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">W/System.err:     at android.os.Parcel.readException(Parcel.java:<span class="number">1472</span>)</span><br><span class="line">        at android.os.Parcel.readException(Parcel.java:<span class="number">1426</span>)</span><br><span class="line">        at android.net.pppoe.IPppoeManager$Stub$Proxy.setPppoeMode(IPppoeManager.java:<span class="number">318</span>)</span><br><span class="line">        at android.net.pppoe.PppoeManager.setPppoeMode(PppoeManager.java:<span class="number">115</span>)</span><br><span class="line">        at com.example.eileen.boxsetting.PppoeConnectTask.doInBackground(PppoeConnectTask.java:<span class="number">50</span>)</span><br><span class="line">        at com.example.eileen.boxsetting.PppoeConnectTask.doInBackground(PppoeConnectTask.java:<span class="number">13</span>)</span><br></pre></td></tr></table></figure><p><strong>原因：</strong> 简单说来，就是在远程方法没有执行完成的情况下，<code>transact()</code>执行完成了，然后抛出了一个空指针。</p><p><strong>解决办法：</strong> 我没有解决办法，啊！</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>test picture</title>
+      <link href="/2018/10/09/test-picture/"/>
+      <url>/2018/10/09/test-picture/</url>
+      
+        <content type="html"><![CDATA[<img src="/2018/10/09/test-picture/2018/10/09/test-picture/1.png" title="这是一个新的博客的图片的说明">]]></content>
+      
+      
+      
+    </entry>
+    
+    <entry>
+      <title>Android: AS 如何导入 jar 包</title>
+      <link href="/2018/09/29/Android-AS-%E5%A6%82%E4%BD%95%E5%AF%BC%E5%85%A5-jar-%E5%8C%85/"/>
+      <url>/2018/09/29/Android-AS-%E5%A6%82%E4%BD%95%E5%AF%BC%E5%85%A5-jar-%E5%8C%85/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档：</strong> </p><ol><li><a href="https://blog.csdn.net/renwudao24/article/details/69071410" target="_blank" rel="noopener">Android Studio导入和删除jar包</a></li><li><a href="https://stackoverflow.com/questions/48249633/errorcannot-fit-requested-classes-in-a-single-dex-file-try-supplying-a-main-dex" target="_blank" rel="noopener">这是一个神奇的网站</a></li></ol><h4 id="1-具体步骤"><a href="#1-具体步骤" class="headerlink" title="1. 具体步骤"></a>1. 具体步骤</h4><ol><li><p>复制 jar 包到 【项目-&gt;app-&gt;libs】路径下，如果没有 libs 文件夹，自己新建一个就行。</p></li><li><p>右键 jar 包，选择 【add as library】，等待项目编译完成。</p></li><li><p>到 build.gradle 文件中查看 dependecies 下是否有加入导入的 jar 包，比如我的是：</p><p><img src="/2018/09/29/Android-AS-如何导入-jar-包/C:/Users\eileen\AppData\Roaming\Typora\typora-user-images\1538978279520.png" alt="1538978279520"></p></li></ol><p>没有就自己手动添加试试？</p><p>到此导入 jar 包的步骤就完成了。</p><h4 id="2-异常处理"><a href="#2-异常处理" class="headerlink" title="2. 异常处理"></a>2. 异常处理</h4><p>不过通常会报以下错误：这个错误的主要原因 &amp; 分类解决办法戳链接看   <a href="https://developer.android.com/studio/build/multidex" target="_blank" rel="noopener">配置方法数超过64K的应用</a>， </p><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Cannot fit requested classes in a single dex file. Try supplying a main-dex list.</span><br><span class="line"># methods: 82121 &gt; 65536</span><br><span class="line">Message&#123;kind=ERROR, text=Cannot fit requested classes in a single dex file. Try supplying a main-dex list.</span><br><span class="line"># methods: 82121 &gt; 65536, sources=[Unknown source file], tool name=Optional.of(D8)&#125;</span><br></pre></td></tr></table></figure><p><strong>解决办法：</strong></p><p>在app build.gradle 文件中，dependencies下添加</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">implementation <span class="string">'com.android.support:multidex:1.0.3'</span></span><br></pre></td></tr></table></figure><p>然后在这个文件中找到 defaultConfig, 在里面添加</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">multiDexEnabled <span class="keyword">true</span></span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: 关于使用 Dialog样式的Activity闪退问题</title>
+      <link href="/2018/09/27/Android-%E5%85%B3%E4%BA%8E%E4%BD%BF%E7%94%A8-Dialog%E6%A0%B7%E5%BC%8F%E7%9A%84Activity%E9%97%AA%E9%80%80%E9%97%AE%E9%A2%98/"/>
+      <url>/2018/09/27/Android-%E5%85%B3%E4%BA%8E%E4%BD%BF%E7%94%A8-Dialog%E6%A0%B7%E5%BC%8F%E7%9A%84Activity%E9%97%AA%E9%80%80%E9%97%AE%E9%A2%98/</url>
+      
+        <content type="html"><![CDATA[<p><strong>问题描述：</strong> 在尝试使用 Dialog 风格 Activity 的时候，参考了一篇文章【<a href="https://blog.csdn.net/weixin_38797695/article/details/78653019" target="_blank" rel="noopener">参考链接</a>】，但是运行时却发生闪退情况。</p><p><strong>解决办法：</strong> 自己琢磨了一下，发现在使用 Dialog 风格 Activity 时，activity 应该 <code>extends Activity</code>, 而我代码写的是<code>extends AppCompatActivity</code>。原理尚不清楚，坑先挖在这了，等着填。</p><p><strong>原来 activity 部分代码：</strong> </p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DevDialogActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_dev_dialog);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p><strong>修改后 activity 部分代码：</strong></p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DevDialogActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_dev_dialog);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: 获取系统时间并格式化显示</title>
+      <link href="/2018/09/27/Android-%E8%8E%B7%E5%8F%96%E7%B3%BB%E7%BB%9F%E6%97%B6%E9%97%B4%E5%B9%B6%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%98%BE%E7%A4%BA/"/>
+      <url>/2018/09/27/Android-%E8%8E%B7%E5%8F%96%E7%B3%BB%E7%BB%9F%E6%97%B6%E9%97%B4%E5%B9%B6%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%98%BE%E7%A4%BA/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: 如何让 ViewGroup 监听按键事件</title>
+      <link href="/2018/09/25/Android-%E5%A6%82%E4%BD%95%E8%AE%A9-ViewGroup-%E7%9B%91%E5%90%AC%E6%8C%89%E9%94%AE%E4%BA%8B%E4%BB%B6/"/>
+      <url>/2018/09/25/Android-%E5%A6%82%E4%BD%95%E8%AE%A9-ViewGroup-%E7%9B%91%E5%90%AC%E6%8C%89%E9%94%AE%E4%BA%8B%E4%BB%B6/</url>
+      
+        <content type="html"><![CDATA[]]></content>
+      
+      
+      
+    </entry>
+    
+    <entry>
+      <title>[待解决]Android: 关于 Fragment 调用 Fragment 时闪退的问题</title>
+      <link href="/2018/09/21/Android-%E5%85%B3%E4%BA%8E-Fragment-%E8%B0%83%E7%94%A8-Fragment-%E6%97%B6%E9%97%AA%E9%80%80%E7%9A%84%E9%97%AE%E9%A2%98/"/>
+      <url>/2018/09/21/Android-%E5%85%B3%E4%BA%8E-Fragment-%E8%B0%83%E7%94%A8-Fragment-%E6%97%B6%E9%97%AA%E9%80%80%E7%9A%84%E9%97%AE%E9%A2%98/</url>
+      
+        <content type="html"><![CDATA[<p>​    </p><p><strong>问题描述：</strong> 在使用 Fragment 调用新的 Fragment 时，遇到程序闪退的情况。代码如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dddd</span><br></pre></td></tr></table></figure><p><strong>解决方法：</strong> 貌似是</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: 关于Fragment初始化闪退问题</title>
+      <link href="/2018/09/19/Android-%E5%85%B3%E4%BA%8EFragment%E5%88%9D%E5%A7%8B%E5%8C%96%E9%97%AA%E9%80%80%E9%97%AE%E9%A2%98/"/>
+      <url>/2018/09/19/Android-%E5%85%B3%E4%BA%8EFragment%E5%88%9D%E5%A7%8B%E5%8C%96%E9%97%AA%E9%80%80%E9%97%AE%E9%A2%98/</url>
+      
+        <content type="html"><![CDATA[<p><strong>参考文档：</strong> <a href="https://blog.csdn.net/JLM_8/article/details/71272638" target="_blank" rel="noopener">Android中如何在Fragment中添加点击事件切换新的Fragment</a> </p><p><strong>问题描述：</strong> 在 Fragment 中，有一些控件（TextView）是需要动态赋值的，然后天真的我直接在 <code>onCreateView</code>中根据用<code>setText()</code>方法 来做。结果就是——闪退。最后发现取到的 TextView 是 null 。</p><p><strong>解决办法：</strong> 其实有一个方法，是<code>onActivityCreated()</code> ，在里面为控件赋值就 OK 的。该方法是等布局加载完成之后，才能通过 ID 取到 Fragment 中的控件。相当于：我在水果店里买东西，伸手想从一个果篮里拿水果出来，但是发现篮子里什么都没有，等店员往里面放了商品之后，我才能在篮子里挑选自己想要的东西。</p><p>具体代码如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public class FragmentMyInfo extends Fragment&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public View onCreateView(LayoutInflater inflater,</span><br><span class="line">                             ViewGroup container,</span><br><span class="line">                             Bundle savedInstanceState)&#123;</span><br><span class="line">        View view = inflater.inflate(R.layout.fragment_my_info, container,false);</span><br><span class="line">        return view;</span><br><span class="line">    &#125;</span><br><span class="line">    public void onActivityCreated(@Nullable Bundle savedInstanceState) &#123;</span><br><span class="line">        super.onActivityCreated(savedInstanceState);</span><br><span class="line">        //这里写要动态赋值的代码</span><br><span class="line">        TextView devType = (TextView) getActivity().findViewById(R.id.dev_type);</span><br><span class="line">        Log.d(TAG, &quot;onCreateView: &quot; + devType);</span><br><span class="line">        devType.setText(R.string.dev_type);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p><strong>多说一句：</strong> title 没有取好，但暂时还不知道怎么用精准且简洁的语言来描述这个问题；第一次尝试用比喻来讲一个问题，也不知道比喻使用恰不恰当。之后想到了更好的都会改。</p><p>菜鸟发出一声凄厉的尖叫</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: Fragment详解</title>
+      <link href="/2018/09/18/Android-Fragment%E8%AF%A6%E8%A7%A3/"/>
+      <url>/2018/09/18/Android-Fragment%E8%AF%A6%E8%A7%A3/</url>
+      
+        <content type="html"><![CDATA[<p><strong>背景介绍：</strong></p><p>​    最近有个练习，考虑用 Fragment 来做，所以研究了一下。</p><p><strong>参考文档：</strong> </p><ul><li><a href="https://xiazdong.github.io/2017/06/15/android-fragment/" target="_blank" rel="noopener">Android基础：Fragment，看这篇就够了</a> </li><li><a href="https://blog.csdn.net/xieluoxixi/article/details/53978544" target="_blank" rel="noopener">利用Bundle完成Activity向Fragment传值</a></li><li><a href="https://blog.csdn.net/JLM_8/article/details/71272638" target="_blank" rel="noopener">Android中如何在Fragment中添加点击事件切换新的Fragment</a></li><li><a href="https://blog.csdn.net/jasoncol_521/article/details/8878553" target="_blank" rel="noopener">Android 文本动态处理方法，TextView动态赋值</a></li><li></li></ul><h4 id="可复写的方法："><a href="#可复写的方法：" class="headerlink" title="可复写的方法："></a>可复写的方法：</h4><ul><li>onCreateView()，返回 Fragment 的 UI 布局</li></ul><p>Tips:</p><ul><li>如果在创建 Fragment 时，需要传入参数，建议使用 <code>setArguments()</code></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: 控件篇（一）</title>
+      <link href="/2018/09/18/Android-%E6%8E%A7%E4%BB%B6%E7%AF%87%EF%BC%88%E4%B8%80%EF%BC%89/"/>
+      <url>/2018/09/18/Android-%E6%8E%A7%E4%BB%B6%E7%AF%87%EF%BC%88%E4%B8%80%EF%BC%89/</url>
+      
+        <content type="html"><![CDATA[<p><strong>背景介绍：</strong> 本文仅记录学习 Android 过程中遇到的各类控件，大概以后会分类总结一下吧，现在只是无脑填充。</p><h4 id="1-显示时间的容器：TextClock"><a href="#1-显示时间的容器：TextClock" class="headerlink" title="1. 显示时间的容器：TextClock"></a>1. 显示时间的容器：TextClock</h4><p><strong>参考文档：</strong> <a href="https://www.jianshu.com/p/a8a37d3d9a03" target="_blank" rel="noopener">Android 实时显示时间</a>  </p><p><strong>问题描述：</strong> 开发过程中需要一个能够显示时间的 TextView，时间分为 24 小时和 12 小时两种格式。类似于：[下午11:08]、[23:08]。</p><p><strong>解决办法：</strong> Google 一下，你就知道。哈哈哈哈开个玩笑，不过确实是 Google 出来的。使用 TextClock 控件，注意：听说这控件 ==API &gt;= 17== 才可用，代码如下：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;TextClock</span><br><span class="line">            style=<span class="string">"@style/LayoutContentStyle"</span></span><br><span class="line">            android:layout_weight=<span class="string">"5"</span></span><br><span class="line">            android:gravity=<span class="string">"center"</span></span><br><span class="line">            android:format12Hour=<span class="string">"aa hh:mm"</span></span><br><span class="line">            android:format24Hour=<span class="string">"hh:mm"</span>/&gt;</span><br></pre></td></tr></table></figure><p>其中 style 是用的自己写的一个样式，我们只用关注 <code>format12Hour</code> &amp; <code>format24Hour</code>两个属性即可。</p><p><code>format12Hour</code>，表示12小时制的显示格式，”aa” 表示显示上午/下午，其它大家读懂。</p><p><code>format24Hour</code>，表示24小时制的显示格式。</p><p>如果需要显示日期，用 <code>&quot;yyyy/MM/dd hh:mm:ss&quot;</code> 即可。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Git: HttpRequestException encountered</title>
+      <link href="/2018/09/18/Git-HttpRequestException-encountered/"/>
+      <url>/2018/09/18/Git-HttpRequestException-encountered/</url>
+      
+        <content type="html"><![CDATA[<p><strong>问题描述：</strong> 之前 git 用得好好的，一个周末回来，<code>git push</code> 的时候就报<code>HttpRequestException encountered.</code>这种错，网上查了 下解决办法 ↓ </p><p><strong>解决办法：</strong> <a href="https://github.com/Microsoft/Git-Credential-Manager-for-Windows/releases/" target="_blank" rel="noopener">点击下载最新的 GCM </a> 下载后安装好就行了…这个问题好像只有 windows 会出现，原理的话，可以看看参考文章。</p><p><strong>参考：</strong> [<a href="https://www.cnblogs.com/xuey/p/8474071.html" target="_blank" rel="noopener">git push fatal: HttpRequestException encountered</a>]</p><h4 id="2-git-pull-报-rejected-master-gt-master-non-fast-forward-错误"><a href="#2-git-pull-报-rejected-master-gt-master-non-fast-forward-错误" class="headerlink" title="2. git pull 报! [rejected]        master -&gt; master (non-fast-forward) 错误"></a>2. git pull 报<code>! [rejected]        master -&gt; master (non-fast-forward)</code> 错误</h4><p><strong>解决办法：</strong> git pull -f</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Git </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>Android: TextView 样式问题</title>
+      <link href="/2018/09/17/Android-TextView-%E6%A0%B7%E5%BC%8F%E9%97%AE%E9%A2%98/"/>
+      <url>/2018/09/17/Android-TextView-%E6%A0%B7%E5%BC%8F%E9%97%AE%E9%A2%98/</url>
+      
+        <content type="html"><![CDATA[<h3 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h3><p>本文单纯记录学习 Android 路上遇到的样式问题。</p><h4 id="1-为-TextView-文字设置两个对齐方向"><a href="#1-为-TextView-文字设置两个对齐方向" class="headerlink" title="1. 为 TextView 文字设置两个对齐方向"></a>1. 为 TextView 文字设置两个对齐方向</h4><p><strong>解决办法：</strong> Android 中的 gravity 属性阔以这样写： <code>android:gravity=&quot;center_vertical|right&quot;</code> ，表示垂直居中，水平靠右。如果需要其它对其方向，可以参考。</p><h4 id="2-EditView-去掉边框（下划线）"><a href="#2-EditView-去掉边框（下划线）" class="headerlink" title="2. EditView 去掉边框（下划线）"></a>2. EditView 去掉边框（下划线）</h4><p><strong>解决办法：</strong> 属性这样写：<code>android:background=&quot;@null&quot;</code> 。</p><h4 id="3-居中问题"><a href="#3-居中问题" class="headerlink" title="3. 居中问题"></a>3. 居中问题</h4><p><strong>需要控件中的内容居中：</strong> 使用 <code>android:gravity</code> 属性</p><p><strong>需要控件在父布局中居中：</strong> 使用 <code>android:layout_gravity</code> 属性</p><h4 id="4-边距问题"><a href="#4-边距问题" class="headerlink" title="4. 边距问题"></a>4. 边距问题</h4><p>关于边距，有两个属性可用：<code>margin</code> 和 <code>padding</code></p><p><strong>margin:</strong> 指控件与控件的距离。</p><p><strong>padding:</strong> 指控件的内边距，肚子里面装的文本之类的东西与边框的距离。</p><p>==如果仍然迷惑，可以打开 Chrome，Windows 下按 F12 进入调试模式，看看标准的盒子模型==</p><p>当然直接用搜索引擎搜标准盒子模型也可以 ↑↑↑</p><h4 id="5-关于-visibility-属性的使用"><a href="#5-关于-visibility-属性的使用" class="headerlink" title="5. 关于 visibility 属性的使用"></a>5. 关于 visibility 属性的使用</h4><p>控件的 visibility 属性决定该控件是否可见，当值为 <code>android:visibility=&quot;invisible&quot;</code>时，控件不可见，==但控件仍然在页面上占据位置==。</p><p><strong>代码中动态设置控件是否可见：</strong> 使用<code>view.setVisibility(int)</code>方法，该方法接收一个 int 值，有两个可选项：View.VISIBLE &amp; View.INVISIBLE.</p><p>也就是说，如果需要设置控件可见，可以这样写</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">TextView tv = (TextView) findViewById(R.id.xxx);</span><br><span class="line">tv.setVisibility(View.VISIBLE); <span class="comment">//不可见同理</span></span><br></pre></td></tr></table></figure><p>EditText.setSelectAllOnFocus(true);</p><p>​    </p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+        </tags>
+      
+    </entry>
+    
+  
+  
 </search>
