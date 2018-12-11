@@ -1,0 +1,121 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="苏打邱的学习笔记/日常"><title>Android: 内部存储与外部存储 | 苏打邱</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/8.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/1.0.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Android: 内部存储与外部存储</h1><a id="logo" href="/.">苏打邱</a><p class="description">苏打邱的博客</p></div><div id="nav-menu"><a class="current" href="/."><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div class="pure-g" id="layout"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Android: 内部存储与外部存储</h1><div class="post-meta">Dec 10, 2018<span> | </span><span class="category"><a href="/categories/学习/">学习</a></span></div><div class="post-content"><p>在说这两个概念以前，我们需要弄懂三个名词的区别：内存、内部存储、外部存储。</p>
+<p><strong>内存(RAM)：</strong> Random Access Memory, 也叫主存。是与CPU直接交换数据的内部存储器。它可以随时读写（刷新时除外），而且速度很快，通常作为操作系统或其他正在运行中的程序的临时数据存储介质 。摘自 <a href="https://zh.wikipedia.org/wiki/%E9%9A%8F%E6%9C%BA%E5%AD%98%E5%8F%96%E5%AD%98%E5%82%A8%E5%99%A8" target="_blank" rel="noopener">维基百科</a></p>
+<p><strong>内部存储(ROM)：</strong> Internal Storage,  注意内部存储不是内存，如果将文件存在内部存储中，那么只能被自己的程序访问到。且一个程序所创建的文件都在和应用包名相同的目录下。 参考自 <a href="http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2013/0923/1557.html" target="_blank" rel="noopener">泡在网上的日子</a> </p>
+<p><strong>外部存储(ROM)：</strong> External Storage, 概念上有点复杂，可以酱紫区别：将手机连上电脑，能被电脑识别，就是外部存储。参考自 <a href="http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2013/0923/1557.html" target="_blank" rel="noopener">泡在网上的日子</a> </p>
+<p>接下来我们看一下安卓内部文件结构，这是机顶盒的文档结构，直接进串口看的。安卓机的话，可以看看 <a href="https://blog.csdn.net/u012702547/article/details/50269639" target="_blank" rel="noopener">参考链接</a> 中查看文档列表的方法。</p>
+<p><img src="http://pjcd0prqq.bkt.clouddn.com/directory_list.png" alt=""></p>
+<p>标红的三个部分为我们需要关注的文件夹。接下来就进入正题。</p>
+<h3 id="一-内部存储"><a href="#一-内部存储" class="headerlink" title="一.  内部存储"></a>一.  内部存储</h3><p> <strong>data</strong> 目录为 <strong>内部存储</strong> 的文件夹，里面一般有两个文件夹需要我们注意：</p>
+<p><img src="http://pjcd0prqq.bkt.clouddn.com/data_list.png" alt=""></p>
+<p>如图所示，我们需要关注 <strong>app</strong> 和 <strong>data</strong> 两个文件夹。</p>
+<ol>
+<li><p><strong>app:</strong>  app 文件夹中存储的是 .apk 文件，是所有我们安装的应用（不包括系统应用）。</p>
+</li>
+<li><p><strong>data：</strong> data 中存储的是所有程序的包名，每个包中都会有如下几个文件夹：</p>
+<ul>
+<li><strong>data/data/包名/files：</strong> 存储普通文件</li>
+<li><strong>data/data/包名/databases:</strong> 存储数据库文件</li>
+<li><strong>data/data/包名/shared_prefs:</strong> 存储本地化持久数据</li>
+<li><strong>data/data/包名/cache:</strong> 存储缓存</li>
+<li><strong>data/data/包名/code_cache:</strong> 存储由运行时应用程序生成的编译或优化的代码</li>
+</ul>
+</li>
+</ol>
+<p><strong>内部存储的特点：始终可用</strong> </p>
+<h3 id="二-外部存储"><a href="#二-外部存储" class="headerlink" title="二. 外部存储"></a>二. 外部存储</h3><p>外部存储一般分为 <strong>扩展卡内存</strong> 和 <strong>SD卡</strong> ， 一般来说，<strong>mnt (或 storage )</strong> 为外部存储的文件夹，外部存储下一般会有 <strong>sdcard</strong> 文件夹，这个是 <strong>SD卡</strong> 的路径。而扩展卡内存，一般为 /mnt/sda/sda1 这类格式。</p>
+<ol>
+<li><p><strong>SD卡(mnt/sdcard 或 storage/sdcard)</strong></p>
+<ul>
+<li><p>九大公有目录，目录中的所有文件均可以被其它程序读取</p>
+<ol>
+<li>DCIM(Digital Camera Images)，存储 <strong>相机</strong> 图片、视频文件</li>
+<li>Pictures：存储用户非相机拍摄的可用图片文件</li>
+<li>Download：存储用户下载文件的标准目录</li>
+<li>Movies：存储可用电影文件</li>
+<li>Alarms：存储闹钟音频文件</li>
+<li>Notifications：存储通知列表中的音频文件</li>
+<li>Ringtones：存储铃声列表中的音频文件</li>
+<li>Podcasts：存储播客列表中的音频文件</li>
+<li>Music：存储其它音频文件(音乐等…)</li>
+</ol>
+</li>
+<li><p>私有目录</p>
+<p>Android/data 即为私有目录。data 下放着一系列包名组成的文件，与内部存储的 data/data 有点像。每个包名代表对应应用程序的私有目录。把文件放在这里，会减轻内部存储的压力，但是会将数据暴露给用户和其它程序。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>扩展卡内存</strong></p>
+<p>扩展卡内存 即用户插入的外置 SD卡，没有直接的方法可以获取到扩展卡的路径。获取扩展卡内存的路径可以参考 <a href="https://sodachiu.github.io/2018/12/07/Android-%E5%88%A9%E7%94%A8%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6%E6%8C%82%E8%BD%BD-%E5%8D%B8%E8%BD%BDSD%E5%8D%A1/" target="_blank" rel="noopener">这里</a> </p>
+</li>
+</ol>
+<p><strong>外部存储的特点：</strong> 并非一直可用、全局可读</p>
+<h3 id="三-总结内-外存储目录"><a href="#三-总结内-外存储目录" class="headerlink" title="三. 总结内 / 外存储目录"></a>三. 总结内 / 外存储目录</h3><ol>
+<li><strong>内部存储目录：</strong>  /data</li>
+<li><strong>外部存储目录：</strong>  <ul>
+<li>内置 SD 卡：/mnt/sdcard 或者 /storage/sdcard</li>
+<li>扩展 SD 卡： /mnt/sda/ /mnt/sdb 或 /storage/sda  /storage/sdb</li>
+</ul>
+</li>
+</ol>
+<h3 id="四-操作存储空间"><a href="#四-操作存储空间" class="headerlink" title="四. 操作存储空间"></a>四. 操作存储空间</h3><p>Google 官方建议 app 的数据应该存储在外部存储的私有目录 /mnt/sdcard/Android/data/ 或 /storage/sdcard/Android/data 下。这样当用户卸载 app 时，会将相关的数据一并删除。</p>
+<p>我们可以将文件目录按 <strong>是否拥有包名</strong> 来进行分类：</p>
+<ol>
+<li><p>拥有包名的路径</p>
+<p><table bordercolor="black" border="1"> </table></p>
+<pre><code>&lt;tr&gt;
+    &lt;td rowspan=&quot;5&quot; align=&quot;center&quot;&gt;&lt;b&gt;内部存储&lt;br&gt; /data/data/包名/&lt;/b&gt;&lt;/td&gt;
+    &lt;td&gt;files&lt;/td&gt;
+    &lt;td&gt;context.getFilesDir()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td&gt;cache&lt;/td&gt;
+    &lt;td&gt;context.getCacheDir()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td&gt;shared_prefs&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td&gt;code_cache&lt;/td&gt;
+    &lt;td&gt;context.getCodeCacheDir() (API level 21)&lt;/td&gt;
+&lt;/tr&gt;
+ &lt;tr&gt;
+    &lt;td&gt;databases&lt;/td&gt;
+    &lt;td&gt;context.getDataDir() (API level 24)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td rowspan=&quot;2&quot; align=&quot;center&quot;&gt;&lt;b&gt;外部存储(mnt 或 storage)&lt;br&gt; /mnt/sdcard/ 或 /storage/sdcard/&lt;/b&gt;&lt;/td&gt;
+    &lt;td&gt;Android/data/包名/files&lt;/td&gt;
+    &lt;td&gt;context.getExternalFiles(&quot;文件夹名&quot;)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+    &lt;td&gt;Android/data/包名/cache&lt;/td&gt;
+    &lt;td&gt;context.getExternalCacheDir()&lt;/td&gt;
+&lt;/tr&gt;
+</code></pre><p>可以看到，所有拥有包名路径的基本都可以使用 <code>context</code> 来获取到对应文件</p>
+<p>下面我们用代码来看一下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">File internalFiles = mContext.getFilesDir();</span><br><span class="line">File internalCache = mContext.getCacheDir();</span><br><span class="line">   </span><br><span class="line">Log.i(TAG, <span class="string">"onCreate: internalFiles----"</span> + internalFiles.toString());</span><br><span class="line">Log.i(TAG, <span class="string">"onCreate: internalCache----"</span> + internalCache.toString());</span><br><span class="line">   </span><br><span class="line">File externalCache = mContext.getExternalCacheDir();</span><br><span class="line">File externalMusic = mContext.getExternalFilesDir(Environment.DIRECTORY_MUSIC);</span><br><span class="line">Log.i(TAG, <span class="string">"onCreate: externalCache----"</span> + externalCache);</span><br><span class="line">Log.i(TAG, <span class="string">"onCreate: externalMusic----"</span> + externalMusic);</span><br></pre></td></tr></table></figure>
+<p>打印结果</p>
+<p><img src="http://pjcd0prqq.bkt.clouddn.com/logresult1.png" alt=""></p>
+</li>
+<li><p>不拥有包名的路径</p>
+<p>可以使用 <code>Environment</code> 来获取到对应路径。<code>Environment</code> 有以下方法获取到指定目录：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> File <span class="title">getDataDirectory</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> File <span class="title">getExternalStorageDirectory</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> File <span class="title">getDownloadCacheDirectory</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> File <span class="title">getRootDirectory</span><span class="params">()</span></span>;</span><br><span class="line"><span class="comment">// 获取九大公有目录 </span></span><br><span class="line"><span class="comment">// 例：File music = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC); </span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> File Environment.getExternalStoragePublicDirectory(String type);</span><br></pre></td></tr></table></figure>
+<p>下面我们来看一下使用上述方法后的打印结果（具体代码就不贴了）</p>
+<p><img src="http://pjcd0prqq.bkt.clouddn.com/logResult2.png" alt=""></p>
+</li>
+</ol>
+<h3 id="五-参考文档"><a href="#五-参考文档" class="headerlink" title="五. 参考文档"></a>五. 参考文档</h3><ol>
+<li><a href="https://blog.csdn.net/ITermeng/article/details/79423035" target="_blank" rel="noopener">Android内、外存储 易混淆点剖析</a> </li>
+<li><a href="https://www.jianshu.com/p/2de0113b3164" target="_blank" rel="noopener">Android存储路径你了解多少？</a></li>
+<li><a href="https://blog.csdn.net/u012702547/article/details/50269639" target="_blank" rel="noopener">彻底理解android中的内部存储与外部存储</a></li>
+<li><a href="https://www.kancloud.cn/zhangzihao/articles/317696" target="_blank" rel="noopener">数据存储-文件存储</a></li>
+<li><a href="http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2013/0923/1557.html" target="_blank" rel="noopener">android中的文件操作详解以及内部存储和外部存储</a> </li>
+</ol>
+<h3 id="六-最后"><a href="#六-最后" class="headerlink" title="六. 最后"></a>六. 最后</h3><p>整篇文章基于 Android API 19。对于 Android 6.0 后的多用户特性，内部存储通过同样的方法，会拿到类似于 /data/user/0/包名/xxx 之类的路径，这个在以后的文章中再做说明（主要是现在还没有了解到啦~）。</p>
+</div><div class="tags"><a href="/tags/Android/">Android</a></div><div class="post-nav"><a class="next" href="/2018/12/10/Android-关于-DialogFragment-的一些总结/">Android: 关于 DialogFragment 的一些总结</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/学习/">学习</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/工作/">工作</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/日常/">日常</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/Android/" style="font-size: 15px;">Android</a> <a href="/tags/Git/" style="font-size: 15px;">Git</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/测试/" style="font-size: 15px;">测试</a> <a href="/tags/计算机网络/" style="font-size: 15px;">计算机网络</a> <a href="/tags/项目流程/" style="font-size: 15px;">项目流程</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/12/10/Android-内部存储与外部存储/">Android: 内部存储与外部存储</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/10/Android-关于-DialogFragment-的一些总结/">Android: 关于 DialogFragment 的一些总结</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/07/Android-利用反射机制挂载-卸载SD卡/">Android: 利用反射机制挂载/卸载SD卡以及获取外部存储路径</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/12/06/Android-关于存储设备状态改变的静态广播无法接收的问题/">Android: 关于存储设备状态改变的静态广播无法接收的问题</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/16/Android-fragment生命周期与执行hide、show后经历的生命周期/">Android: fragment生命周期与执行hide、show后经历的生命周期</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/16/Android-获取当前显示的fragment对象/">Android: 获取当前显示的fragment对象</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/16/Linux-chmod命令/">Linux: chmod命令</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/16/Android-sp-还是dp？/">Android: sp 还是dp？</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/16/Android-getSupportFragmentManager-gerFragmentManager/">Android: getSupportFragmentManager & gerFragmentManager</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/11/16/Android：神奇的属性篇/">Android：神奇的属性篇</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2018 <a href="/." rel="nofollow">苏打邱.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a class="show" id="rocket" href="#top"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.3.5/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.3.5/jquery.fancybox.min.css"><script type="text/javascript" src="/js/search.js?v=0.0.0"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+   search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
