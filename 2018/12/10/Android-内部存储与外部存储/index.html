@@ -21,7 +21,7 @@
 </ul>
 </li>
 </ol>
-<p><strong>内部存储的特点：始终可用</strong> </p>
+<p><strong>内部存储的特点：始终可用，不可共享</strong> </p>
 <h3 id="二-外部存储"><a href="#二-外部存储" class="headerlink" title="二. 外部存储"></a>二. 外部存储</h3><p>外部存储一般分为 <strong>扩展卡内存</strong> 和 <strong>SD卡</strong> ， 一般来说，<strong>mnt (或 storage )</strong> 为外部存储的文件夹，外部存储下一般会有 <strong>sdcard</strong> 文件夹，这个是 <strong>SD卡</strong> 的路径。而扩展卡内存，一般为 /mnt/sda/sda1 这类格式。</p>
 <ol>
 <li><p><strong>SD卡(mnt/sdcard 或 storage/sdcard)</strong></p>
@@ -48,7 +48,7 @@
 <p>扩展卡内存 即用户插入的外置 SD卡，没有直接的方法可以获取到扩展卡的路径。获取扩展卡内存的路径可以参考 <a href="https://sodachiu.github.io/2018/12/07/Android-%E5%88%A9%E7%94%A8%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6%E6%8C%82%E8%BD%BD-%E5%8D%B8%E8%BD%BDSD%E5%8D%A1/" target="_blank" rel="noopener">这里</a> </p>
 </li>
 </ol>
-<p><strong>外部存储的特点：</strong> 并非一直可用、全局可读</p>
+<p><strong>外部存储的特点：</strong> <strong>并非一直可用、全局可读</strong></p>
 <h3 id="三-总结内-外存储目录"><a href="#三-总结内-外存储目录" class="headerlink" title="三. 总结内 / 外存储目录"></a>三. 总结内 / 外存储目录</h3><ol>
 <li><strong>内部存储目录：</strong>  /data</li>
 <li><strong>外部存储目录：</strong>  <ul>
@@ -91,12 +91,14 @@
     &lt;td&gt;Android/data/包名/cache&lt;/td&gt;
     &lt;td&gt;context.getExternalCacheDir()&lt;/td&gt;
 &lt;/tr&gt;
-</code></pre><p>可以看到，所有拥有包名路径的基本都可以使用 <code>context</code> 来获取到对应文件</p>
-<p>下面我们用代码来看一下</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">File internalFiles = mContext.getFilesDir();</span><br><span class="line">File internalCache = mContext.getCacheDir();</span><br><span class="line">   </span><br><span class="line">Log.i(TAG, <span class="string">"onCreate: internalFiles----"</span> + internalFiles.toString());</span><br><span class="line">Log.i(TAG, <span class="string">"onCreate: internalCache----"</span> + internalCache.toString());</span><br><span class="line">   </span><br><span class="line">File externalCache = mContext.getExternalCacheDir();</span><br><span class="line">File externalMusic = mContext.getExternalFilesDir(Environment.DIRECTORY_MUSIC);</span><br><span class="line">Log.i(TAG, <span class="string">"onCreate: externalCache----"</span> + externalCache);</span><br><span class="line">Log.i(TAG, <span class="string">"onCreate: externalMusic----"</span> + externalMusic);</span><br></pre></td></tr></table></figure>
-<p>打印结果</p>
-<p><img src="http://pjcd0prqq.bkt.clouddn.com/logresult1.png" alt=""></p>
-</li>
+</code></pre></li>
+</ol>
+<p>   可以看到，所有拥有包名路径的基本都可以使用 <code>context</code> 来获取到对应文件</p>
+<p>   下面我们用代码来看一下</p>
+   <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">File internalFiles = mContext.getFilesDir();</span><br><span class="line">File internalCache = mContext.getCacheDir();</span><br><span class="line">   </span><br><span class="line">Log.i(TAG, <span class="string">"onCreate: internalFiles----"</span> + internalFiles.toString());</span><br><span class="line">Log.i(TAG, <span class="string">"onCreate: internalCache----"</span> + internalCache.toString());</span><br><span class="line">   </span><br><span class="line">File externalCache = mContext.getExternalCacheDir();</span><br><span class="line">File externalMusic = mContext.getExternalFilesDir(Environment.DIRECTORY_MUSIC);</span><br><span class="line">Log.i(TAG, <span class="string">"onCreate: externalCache----"</span> + externalCache);</span><br><span class="line">Log.i(TAG, <span class="string">"onCreate: externalMusic----"</span> + externalMusic);</span><br></pre></td></tr></table></figure>
+<p>   打印结果</p>
+<p>   <img src="http://pjcd0prqq.bkt.clouddn.com/logresult1.png" alt=""></p>
+<ol start="2">
 <li><p>不拥有包名的路径</p>
 <p>可以使用 <code>Environment</code> 来获取到对应路径。<code>Environment</code> 有以下方法获取到指定目录：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> File <span class="title">getDataDirectory</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> File <span class="title">getExternalStorageDirectory</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> File <span class="title">getDownloadCacheDirectory</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> File <span class="title">getRootDirectory</span><span class="params">()</span></span>;</span><br><span class="line"><span class="comment">// 获取九大公有目录 </span></span><br><span class="line"><span class="comment">// 例：File music = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC); </span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> File Environment.getExternalStoragePublicDirectory(String type);</span><br></pre></td></tr></table></figure>
